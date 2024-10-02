@@ -1,15 +1,16 @@
-import Image from "next/image";
-import Link from "next/link";
+import Image from 'next/image';
+import Link from 'next/link';
 
 export default function Sidebar() {
   return (
-    <div className="sidebar">
-      <div className="sidebar__logo">
+    <div className="sidebar flex w-16 flex-col">
+      <div className="sidebar__logo h-16">
         <Image
-          src="https://picsum.photos/200"
+          className="object-"
+          src="https://picsum.photos/64"
           alt="velex Logo"
-          width={200}
-          height={200}
+          width={64}
+          height={64}
         />
       </div>
       <div className="sidebar__menu">

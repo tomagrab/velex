@@ -3,10 +3,10 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "picsum.photos",
-        port: "",
-        pathname: "/200",
+        protocol: 'https',
+        hostname: 'picsum.photos',
+        port: '',
+        pathname: '/64',
       },
     ],
   },
