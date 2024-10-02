@@ -1,9 +1,9 @@
 import Image from 'next/image';
-import Link from 'next/link';
+import SidebarMenu from './sidebar-menu/sidebar-menu';
 
 export default function Sidebar() {
   return (
-    <div className="sidebar flex w-16 flex-col">
+    <aside className="sidebar flex h-[100dvh] w-16 flex-col items-center gap-8 bg-slate-800 text-white dark:bg-background">
       <div className="sidebar__logo h-16">
         <Image
           className="object-"
@@ -13,19 +13,7 @@ export default function Sidebar() {
           height={64}
         />
       </div>
-      <div className="sidebar__menu">
-        <ul>
-          <li>
-            <Link href="#">Placeholder 1</Link>
-          </li>
-          <li>
-            <Link href="#">Placeholder 2</Link>
-          </li>
-          <li>
-            <Link href="#">Placeholder 3</Link>
-          </li>
-        </ul>
-      </div>
-    </div>
+      <SidebarMenu />
+    </aside>
   );
 }
