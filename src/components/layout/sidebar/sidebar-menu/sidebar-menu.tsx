@@ -1,5 +1,5 @@
 import { SidebarMenuItemProps } from '@/lib/types/layout/sidebar/sidebar-menu/sidebar-menu-item/sidebar-menu-item-type';
-import { House, Settings, Ticket, User } from 'lucide-react';
+import { House, Settings, Smartphone, Ticket, User } from 'lucide-react';
 import SidebarMenuItem from '@/components/layout/sidebar/sidebar-menu/sidebar-menu-item/sidebar-menu-item';
 
 export default function SidebarMenu() {
@@ -14,16 +14,22 @@ export default function SidebarMenu() {
       link: '/',
     },
     {
-      id: 'users-menu-item',
-      title: 'Users',
-      icon: <User className={menuItemClasses} />,
-      link: '/users',
+      id: 'assets-menu-item',
+      title: 'Assets',
+      icon: <Smartphone className={menuItemClasses} />,
+      link: '/assets',
     },
     {
       id: 'tickets-menu-item',
       title: 'Tickets',
       icon: <Ticket className={menuItemClasses} />,
       link: '/tickets',
+    },
+    {
+      id: 'users-menu-item',
+      title: 'Users',
+      icon: <User className={menuItemClasses} />,
+      link: '/users',
     },
   ];
 
