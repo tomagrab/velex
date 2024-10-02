@@ -188,4 +188,4 @@ Features are organized into milestones. Major features should be labeled as majo
 
 ### License
 
-This project is licensed under the MIT License. See the [LICENSE]() file for more information.
+This project is licensed under the MIT License. See the [LICENSE](https://github.com/tomagrab/velex/blob/dev/LICENSE.md) file for more information.
