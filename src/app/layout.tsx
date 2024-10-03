@@ -3,6 +3,7 @@ import localFont from 'next/font/local';
 import './globals.scss';
 import Header from '@/components/layout/header/header';
 import Sidebar from '@/components/layout/sidebar/sidebar';
+import ChatWidget from '@/components/layout/chat-widget/chat-widget/chat-widget';
 
 const geistSans = localFont({
   src: './fonts/GeistVF.woff',
@@ -41,6 +42,7 @@ export default function RootLayout({
             </div>
           </div>
         </div>
+        <ChatWidget />
       </body>
     </html>
   );
