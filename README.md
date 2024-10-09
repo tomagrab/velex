@@ -156,6 +156,207 @@ Velex will use either Clerk or Auth0 for user authentication, however, as of wri
 
 #
 
+### Test Promps for the assistant chatbot
+
+1. Code Snippet Request:
+
+   - Can you show me a JavaScript function that calculates the factorial of a number?
+   - Expected Markdown: A code block with a JavaScript function.
+   - Output Example:
+
+```javascript
+function factorial(n) {
+  if (n === 0 || n === 1) return 1;
+  return n * factorial(n - 1);
+}
+```
+
+2. Headings Request:
+
+   - Explain the lifecycle methods of a React component and categorize them using headings.
+   - Expected Markdown: Headings (e.g., ## for sections) for each lifecycle phase.
+   - Output Example:
+
+```markdown
+## Mounting
+
+    - `constructor()`
+    - `componentDidMount()`
+
+## Updating
+
+    - `shouldComponentUpdate()`
+    - `componentDidUpdate()`
+
+## Unmounting
+
+    - componentWillUnmount()`
+```
+
+3.  Bullet Lists Request:
+
+    - List the key features of Next.js.
+    - Expected Markdown: A bullet list.
+    - Output Example:
+
+```diff
+- File-based routing
+- API routes
+- Static generation
+- Server-side rendering
+```
+
+4. Numbered Lists Request:
+
+   - What are the steps to deploy a Next.js app to Vercel?
+   - Expected Markdown: A numbered list.
+   - Output Example:
+
+```markdown
+1. Create a Vercel account.
+2. Install the Vercel CLI.
+3. Link your project to Vercel.
+4. Deploy your project with `vercel` command.
+```
+
+5.  Table Request:
+
+    - Can you create a table comparing Next.js and Create React App?
+    - Expected Markdown: A table.
+    - Output Example:
+
+| Feature                | Next.js | Create React App |
+| ---------------------- | ------- | ---------------- |
+| Server-side rendering  | Yes     | No               |
+| Static site generation | Yes     | No               |
+| API Routes             | Yes     | No               |
+
+6. Blockquote Request:
+
+   - Can you provide a motivational blockquote for developers?
+   - Expected Markdown: A blockquote.
+   - Output Example:
+
+```shell
+> "First, solve the problem. Then, write the code." – John Johnson
+```
+
+7. Bold and Italic Text Request:
+
+   - Can you emphasize key aspects of learning JavaScript?
+   - Expected Markdown: Bold and italic text.
+   - Output Example:
+
+- **Variables**: Store data values.
+- _Functions_: Define reusable blocks of code.
+- **Objects**: Organize related data and functions.
+
+8. Link Request:
+
+   - Can you provide a link to the official React documentation?
+   - Expected Markdown: A hyperlink.
+   - Output Example:
+
+[React Documentation](https://reactjs.org/)
+
+9. All of the above in one long prompt:
+
+   - Can you provide a JavaScript function that calculates the factorial of a number? Explain the lifecycle methods of a React component and categorize them using headings. List the key features of Next.js. What are the steps to deploy a Next.js app to Vercel? Can you create a table comparing Next.js and Create React App? Can you provide a motivational blockquote for developers? Can you emphasize key aspects of learning JavaScript? Can you provide a link to the official React documentation?
+   - Expected Markdown: A combination of all the above prompts.
+   - Output Example (I was too lazy to write this one out, so I just console logged a raw response from the assistant, since it sends the response in markdown format lol):
+
+<details>
+  <summary>Really Long Example</summary>
+
+### JavaScript Factorial Function
+
+Here is a simple JavaScript function to calculate the factorial of a number:
+
+```javascript
+function factorial(n) {
+  if (n < 0) return -1; // Factorial is not defined for negative numbers
+  if (n === 0) return 1; // The factorial of 0 is 1
+  return n * factorial(n - 1);
+}
+
+console.log(factorial(5)); // Output: 120
+```
+
+### Lifecycle Methods of a React Component
+
+React components have a lifecycle that can be broken down into three main phases:
+
+#### 1. Mounting
+
+- **constructor()**: Initializes state and binds methods.
+- **static getDerivedStateFromProps()**: Syncs state to props.
+- **render()**: Returns the JSX to render.
+- **componentDidMount()**: Invoked immediately after a component is mounted. Ideal for network requests or DOM manipulations.
+
+#### 2. Updating
+
+- **static getDerivedStateFromProps()**: Same as in mounting; used to sync state.
+- **shouldComponentUpdate()**: Determines whether component should render after state/props changes.
+- **render()**: Re-renders the JSX when state/props change.
+- **getSnapshotBeforeUpdate()**: Captures DOM info before update.
+- **componentDidUpdate()**: Invoked after an update to handle post-update logic.
+
+#### 3. Unmounting
+
+- **componentWillUnmount()**: Cleanup method to cancel network requests, remove event listeners, etc.
+
+### Key Features of Next.js
+
+- **Server-Side Rendering (SSR)**: Renders pages on the server for improved performance and SEO.
+- **Static Site Generation (SSG)**: Pre-renders static pages at build time.
+- **Automatic Code Splitting**: Optimizes page loading by automatically dividing code.
+- **API Routes**: Allows building of API endpoints within a Next.js app.
+- **Built-in CSS Support**: Provides built-in support for CSS and CSS-in-JS solutions like styled-components.
+- **Image Optimization**: Automatically optimizes images.
+- **File-system Routing**: Uses the filesystem as an API to create routes.
+
+### Steps to Deploy a Next.js App to Vercel
+
+1. **Install Vercel CLI**: If you prefer deploying through the CLI, install it using `npm install -g vercel`.
+2. **Login to Vercel**: Run `vercel login` and use your Vercel credentials.
+3. **Build Your Next.js App**: Run `npm run build` in your project directory.
+4. **Deploy to Vercel**: Run `vercel` and follow the prompts to deploy your project.
+
+Alternatively, you can directly link your Git repository to Vercel, and it will automatically deploy on each push.
+
+### Comparison Table: Next.js vs. Create React App
+
+| Feature                   | Next.js                    | Create React App              |
+| ------------------------- | -------------------------- | ----------------------------- |
+| **Rendering**             | SSR, SSG, ISR, Client-side | Client-side Only              |
+| **Routing**               | File-based Routing         | Manual Routing (react-router) |
+| **Deployment**            | Optimized for Vercel       | Generic Frontend Deployment   |
+| **API Routes**            | Built-in APIs              | Requires separate server      |
+| **Image Optimization**    | Built-in                   | Third-party libraries         |
+| **Custom Server Support** | Yes                        | No                            |
+| **Static Export**         | Supported                  | Requires additional setup     |
+
+### Motivational Blockquote for Developers
+
+> "The best way to predict the future is to invent it." – Alan Kay
+
+### Key Aspects of Learning JavaScript
+
+- **Understand the Basics**: Grasp fundamental concepts like variables, data types, and control structures.
+- **Learn Asynchronous Programming**: Master callback functions, promises, and async/await.
+- **Manipulate the DOM**: Interact with and modify the document structure and styles.
+- **Master ES6+ Features**: Utilize features like arrow functions, destructuring, spread/rest operators, and modules.
+- **Understand Event Handling**: Learn how to handle events and form interactions.
+- **Dive into Object-Oriented Programming**: Explore JavaScript's prototype-based OOP approach.
+
+### Link to the Official React Documentation
+
+You can access the official React documentation here: [React Documentation](https://reactjs.org/docs/getting-started.html)
+
+</details>
+
+#
+
 ### Key Features
 
 #### Ticketing System
