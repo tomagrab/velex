@@ -62,9 +62,15 @@ Install the project dependencies using either npm or yarn.
 
 #### 4. Environment Variables
 
-**NOTE**: As of writing this, Velex does not use any environment variables. However, this will change in the future. Below are the general steps to set up environment variables for the project along with common variables for Auth0 and Clerk.
+Currently, Velex relies on one environment variable for the OpenAI API key. To set up the environment variable, create a `.env.local` file in the root directory of the project and add the following:
 
-Create a `.env.local` file in the root directory of the project. Add the following environment variables:
+```bash
+    OPENAI_API_KEY=your_openai_api_key
+```
+
+**NOTE**: In the future, Velex will use third-party auth providers like Auth0 or Clerk for user authentication. To set up these providers, follow the instructions below:
+
+In the `.env.local` file, add the following environment variables:
 
 - Auth0
 

@@ -1,6 +1,7 @@
+import { CustomError } from '@/lib/interfaces/utilities/custom-error/custom-error';
 import OpenAI from 'openai';
 
-const openai = new OpenAI({
+export const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY!,
 });
 
@@ -21,9 +22,12 @@ export async function getAssistantId(): Promise<string> {
         });
         return assistant.id;
       } catch (error) {
-        console.error('Error creating assistant:', error);
+        const customError = error as CustomError;
+
+        console.error('Error creating assistant:', customError.message);
         // Reset the promise to allow retries
         assistantIdPromise = null;
+
         throw new Error('Failed to create assistant.');
       }
     })();

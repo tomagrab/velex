@@ -1,4 +1,5 @@
 import { CustomError } from '@/lib/interfaces/utilities/custom-error/custom-error';
+import { isChatEnabled } from '@/lib/utilities/openai/chat-enabled/chat-enabled';
 import openai, {
   getAssistantId,
 } from '@/lib/utilities/openai/openai-client/openai-client';
@@ -7,6 +8,15 @@ import { withRetry } from '@/lib/utilities/with-retry/with-retry';
 export const runtime = 'nodejs'; // Ensure Node.js runtime
 
 export async function POST(request: Request) {
+  const chatEnabled = await isChatEnabled;
+
+  if (!chatEnabled) {
+    return new Response(JSON.stringify({ error: 'Chat is disabled.' }), {
+      status: 403,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const { message, threadId } = await request.json();
 
   if (!message) {
