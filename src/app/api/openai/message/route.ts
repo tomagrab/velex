@@ -4,11 +4,24 @@ import openai, {
   getAssistantId,
 } from '@/lib/utilities/openai/openai-client/openai-client';
 import { withRetry } from '@/lib/utilities/with-retry/with-retry';
+import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
+import { NextResponse } from 'next/server';
 
-export const runtime = 'nodejs'; // Ensure Node.js runtime
+export const runtime = 'nodejs';
 
-export async function POST(request: Request) {
-  const chatEnabled = await isChatEnabled;
+export const POST = withApiAuthRequired(async req => {
+  const res = new NextResponse();
+  const session = await getSession(req, res);
+  const user = session?.user;
+
+  if (!user) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
+  const chatEnabled = await isChatEnabled();
 
   if (!chatEnabled) {
     return new Response(JSON.stringify({ error: 'Chat is disabled.' }), {
@@ -17,7 +30,7 @@ export async function POST(request: Request) {
     });
   }
 
-  const { message, threadId } = await request.json();
+  const { message, threadId } = await req.json();
 
   if (!message) {
     return new Response(
@@ -157,4 +170,4 @@ export async function POST(request: Request) {
       headers: { 'Content-Type': 'application/json' },
     });
   }
-}
+});

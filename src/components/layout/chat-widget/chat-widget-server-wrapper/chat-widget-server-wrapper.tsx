@@ -1,11 +1,8 @@
-import { validateAPIKey } from '@/lib/utilities/openai/validate-openai-api-key/validate-openai-api-key';
-import { hasOpenAIAPIKey } from '@/lib/utilities/features/features';
 import ChatWidget from '@/components/layout/chat-widget/chat-widget/chat-widget';
+import { isChatEnabled } from '@/lib/utilities/openai/chat-enabled/chat-enabled';
 
 export default async function ChatWidgetServerWrapper() {
-  const isOpenAIAPIKeyValid = await validateAPIKey();
+  const chatEnabled = await isChatEnabled();
 
-  const isChatEnabled = isOpenAIAPIKeyValid && hasOpenAIAPIKey;
-
-  return isChatEnabled ? <ChatWidget /> : null;
+  return chatEnabled ? <ChatWidget /> : null;
 }
