@@ -1,5 +1,5 @@
-import ModeToggle from '@/components/layout/header/mode-toggle/mode-toggle';
 import PageHeadingBreadcrumbs from '@/components/layout/page-heading/page-heading-breadcrumbs/page-heading-breadcrumbs';
+import HeaderRight from '@/components/layout/header/header-right/header-right';
 
 export default function Header() {
   return (
@@ -12,7 +12,7 @@ export default function Header() {
         <div className="flex h-full items-center justify-center md:hidden"></div>
       </div>
       <div className="flex w-1/2 justify-end gap-2 pr-8">
-        <ModeToggle />
+        <HeaderRight />
       </div>
     </header>
   );

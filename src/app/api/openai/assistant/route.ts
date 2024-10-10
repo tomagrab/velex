@@ -1,8 +1,21 @@
+import { withApiAuthRequired, getSession } from '@auth0/nextjs-auth0';
 import { isChatEnabled } from '@/lib/utilities/openai/chat-enabled/chat-enabled';
 import { getAssistantId } from '@/lib/utilities/openai/openai-client/openai-client';
 import { withRetry } from '@/lib/utilities/with-retry/with-retry';
+import { NextResponse } from 'next/server';
 
-export async function GET() {
+export const GET = withApiAuthRequired(async req => {
+  const res = new NextResponse();
+  const session = await getSession(req, res);
+  const user = session?.user;
+
+  if (!user) {
+    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
+      status: 401,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  }
+
   const chatEnabled = await isChatEnabled();
 
   if (!chatEnabled) {
@@ -29,4 +42,4 @@ export async function GET() {
       },
     );
   }
-}
+});
