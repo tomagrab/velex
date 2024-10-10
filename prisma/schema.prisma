@@ -1,8 +1,94 @@
+// datasource and generator
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
 generator client {
   provider = "prisma-client-js"
 }
 
-datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+// User model
+model User {
+  id             String   @id @default(cuid()) // User ID generated using cuid
+  auth0Id        String   @unique // Auth0 user ID
+  email          String   @unique
+  givenName      String
+  familyName     String
+  nickname       String
+  name           String
+  picture        String
+  emailVerified  Boolean
+  role           String   @default("User") // Defaults to "User" if role not provided
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+  ticketsCreated Ticket[] @relation("Creator")
+  ticketsOwned   Ticket[] @relation("Owner")
+  ticketsEdited  Ticket[] @relation("Editor")
+  ticketsAssigned Ticket[] @relation("Assignee")
+  notesCreated   Note[]   @relation("NoteCreator")
+  notesEdited    Note[]   @relation("NoteEditor")
+}
+
+// Ticket model
+model Ticket {
+  id             String     @id @default(cuid()) // Unique ticket ID
+  creatorId      String
+  creator        User       @relation("Creator", fields: [creatorId], references: [id])
+  ownerId        String
+  owner          User       @relation("Owner", fields: [ownerId], references: [id])
+  lastEditedById String
+  lastEditedBy   User       @relation("Editor", fields: [lastEditedById], references: [id])
+  assignedToId   String
+  assignedTo     User       @relation("Assignee", fields: [assignedToId], references: [id])
+  clientName     String
+  clientEmail    String?    // Optional
+  clientPhone    String?    // Optional
+  statusId       Int
+  status         Status     @relation(fields: [statusId], references: [id])
+  categoryId     Int
+  category       Category   @relation(fields: [categoryId], references: [id])
+  subCategoryId  Int
+  subCategory    SubCategory @relation(fields: [subCategoryId], references: [id])
+  notes          Note[]     @relation("TicketNotes")
+  createdAt      DateTime   @default(now())
+  updatedAt      DateTime   @updatedAt
+}
+
+// Status model
+model Status {
+  id    Int      @id @default(autoincrement())
+  name  String   @unique
+  tickets Ticket[]
+}
+
+// Category model
+model Category {
+  id          Int          @id @default(autoincrement())
+  name        String       @unique
+  subCategories SubCategory[]
+  tickets     Ticket[]
+}
+
+// SubCategory model
+model SubCategory {
+  id         Int       @id @default(autoincrement())
+  name       String    @unique
+  categoryId Int
+  category   Category  @relation(fields: [categoryId], references: [id])
+  tickets    Ticket[]
+}
+
+// Note model
+model Note {
+  id             String   @id @default(cuid()) // Unique note ID
+  ticketId       String
+  ticket         Ticket   @relation("TicketNotes", fields: [ticketId], references: [id])
+  creatorId      String
+  creator        User     @relation("NoteCreator", fields: [creatorId], references: [id])
+  lastEditedById String
+  lastEditedBy   User     @relation("NoteEditor", fields: [lastEditedById], references: [id])
+  content        String
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
 }
