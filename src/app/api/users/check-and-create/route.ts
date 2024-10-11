@@ -4,12 +4,13 @@ import jwt, { JwtHeader, SigningKeyCallback } from 'jsonwebtoken';
 import jwksClient from 'jwks-rsa';
 import { CustomError } from '@/lib/interfaces/utilities/custom-error/custom-error';
 
-const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN; // e.g., "your-domain.us.auth0.com"
-const API_IDENTIFIER = process.env.API_IDENTIFIER; // e.g., "https://your-api-identifier"
+const AUTH0_ACTION_M2M_DOMAIN = process.env.AUTH0_ACTION_M2M_DOMAIN; // e.g., "your-domain.us.auth0.com"
+const AUTH0_ACTION_M2M_API_IDENTIFIER =
+  process.env.AUTH0_ACTION_M2M_API_IDENTIFIER; // e.g., "https://your-api-identifier"
 
 // Set up the JWKS client
 const client = jwksClient({
-  jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
+  jwksUri: `https://${AUTH0_ACTION_M2M_DOMAIN}/.well-known/jwks.json`,
 });
 
 function getKey(header: JwtHeader, callback: SigningKeyCallback) {
@@ -45,8 +46,8 @@ export async function POST(request: NextRequest) {
         token,
         getKey,
         {
-          audience: API_IDENTIFIER,
-          issuer: `https://${AUTH0_DOMAIN}/`,
+          audience: AUTH0_ACTION_M2M_API_IDENTIFIER,
+          issuer: `https://${AUTH0_ACTION_M2M_DOMAIN}/`,
           algorithms: ['RS256'],
         },
         err => {
