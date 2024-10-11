@@ -4,10 +4,9 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "prisma generate && prisma migrate deploy && next build",
     "start": "next start",
-    "lint": "next lint",
-    "vercel-build": "prisma generate && prisma migrate deploy && next build"
+    "lint": "next lint"
   },
   "dependencies": {
     "@auth0/nextjs-auth0": "^3.5.0",
