@@ -25,32 +25,23 @@ export const GET = withApiAuthRequired(
           { status: 400 },
         );
       }
-
       const id = context.params.id as string;
-      const ticket = await prisma.ticket.findUnique({
+      const category = await prisma.category.findUnique({
         where: { id },
-        include: {
-          creator: true,
-          owner: true,
-          status: true,
-          category: true,
-          subCategory: true,
-          notes: true,
-        },
       });
 
-      if (!ticket) {
+      if (!category) {
         return NextResponse.json(
-          { error: 'Ticket not found' },
+          { error: 'Category not found' },
           { status: 404 },
         );
       }
 
-      return NextResponse.json(ticket);
+      return NextResponse.json(category);
     } catch (error) {
-      console.error('Error fetching ticket:', error);
+      console.error('Error fetching category:', error);
       return NextResponse.json(
-        { error: 'Error fetching ticket' },
+        { error: 'Error fetching category' },
         { status: 500 },
       );
     }
@@ -80,27 +71,19 @@ export const PUT = withApiAuthRequired(
           { status: 400 },
         );
       }
-
       const id = context.params.id as string;
       const data = await request.json();
 
-      const updatedTicket = await prisma.ticket.update({
+      const updatedCategory = await prisma.category.update({
         where: { id },
-        data: {
-          ...data,
-          creator: { connect: { id: data.creatorId } },
-          owner: { connect: { id: data.ownerId } },
-          status: { connect: { id: data.statusId } },
-          category: { connect: { id: data.categoryId } },
-          subCategory: { connect: { id: data.subCategoryId } },
-        },
+        data,
       });
 
-      return NextResponse.json(updatedTicket);
+      return NextResponse.json(updatedCategory);
     } catch (error) {
-      console.error('Error updating ticket:', error);
+      console.error('Error updating category:', error);
       return NextResponse.json(
-        { error: 'Error updating ticket' },
+        { error: 'Error updating category' },
         { status: 500 },
       );
     }
@@ -130,17 +113,16 @@ export const DELETE = withApiAuthRequired(
           { status: 400 },
         );
       }
-
       const id = context.params.id as string;
-      await prisma.ticket.delete({
+      await prisma.category.delete({
         where: { id },
       });
 
-      return NextResponse.json({ message: 'Ticket deleted' });
+      return NextResponse.json({ message: 'Category deleted' });
     } catch (error) {
-      console.error('Error deleting ticket:', error);
+      console.error('Error deleting category:', error);
       return NextResponse.json(
-        { error: 'Error deleting ticket' },
+        { error: 'Error deleting category' },
         { status: 500 },
       );
     }
