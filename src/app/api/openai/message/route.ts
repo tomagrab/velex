@@ -5,56 +5,50 @@ import openai, {
 } from '@/lib/utilities/openai/openai-client/openai-client';
 import { withRetry } from '@/lib/utilities/with-retry/with-retry';
 import { getSession, withApiAuthRequired } from '@auth0/nextjs-auth0';
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 
 export const runtime = 'nodejs';
 
-export const POST = withApiAuthRequired(async req => {
-  const res = new NextResponse();
-  const session = await getSession(req, res);
-  const user = session?.user;
-
-  if (!user) {
-    return new Response(JSON.stringify({ error: 'Unauthorized' }), {
-      status: 401,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  const chatEnabled = await isChatEnabled();
-
-  if (!chatEnabled) {
-    return new Response(JSON.stringify({ error: 'Chat is disabled.' }), {
-      status: 403,
-      headers: { 'Content-Type': 'application/json' },
-    });
-  }
-
-  const { message, threadId } = await req.json();
-
-  if (!message) {
-    return new Response(
-      JSON.stringify({ error: 'Message content is required.' }),
-      {
-        status: 400,
-        headers: { 'Content-Type': 'application/json' },
-      },
-    );
-  }
-
+export const POST = withApiAuthRequired(async (request: NextRequest) => {
   try {
-    // Create a thread if not provided
+    const response = new NextResponse();
+    const session = await getSession(request, response);
+    const user = session?.user;
+
+    if (!user) {
+      return new NextResponse(JSON.stringify({ error: 'Unauthorized' }), {
+        status: 401,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const chatEnabled = await isChatEnabled();
+    if (!chatEnabled) {
+      return new NextResponse(JSON.stringify({ error: 'Chat is disabled.' }), {
+        status: 403,
+        headers: { 'Content-Type': 'application/json' },
+      });
+    }
+
+    const { message, threadId } = await request.json();
+    if (!message) {
+      return new NextResponse(
+        JSON.stringify({ error: 'Message content is required.' }),
+        { status: 400, headers: { 'Content-Type': 'application/json' } },
+      );
+    }
+
     let currentThreadId = threadId;
+
     if (!currentThreadId) {
       const thread = await openai.beta.threads.create();
       currentThreadId = thread.id;
+
+      if (!currentThreadId) {
+        throw new Error('Failed to create a new thread.');
+      }
     }
 
-    if (!currentThreadId) {
-      throw new Error('Failed to create a new thread.');
-    }
-
-    // Add user message to the thread
     const messageResponse = await openai.beta.threads.messages.create(
       currentThreadId,
       {
@@ -67,10 +61,8 @@ export const POST = withApiAuthRequired(async req => {
       throw new Error('Failed to add message to the thread.');
     }
 
-    // Retrieve assistant ID directly
     const assistantId = await withRetry(() => getAssistantId());
 
-    // Run the assistant on the thread using runs.stream
     const run = openai.beta.threads.runs.stream(currentThreadId, {
       assistant_id: assistantId,
     });
@@ -79,9 +71,8 @@ export const POST = withApiAuthRequired(async req => {
 
     const stream = new ReadableStream({
       start(controller) {
-        let isControllerClosed = false; // Flag to track controller state
+        let isControllerClosed = false;
 
-        // Handle text deltas from the assistant
         run.on('textDelta', delta => {
           if (isControllerClosed) return;
 
@@ -97,15 +88,12 @@ export const POST = withApiAuthRequired(async req => {
           }
         });
 
-        // Handle errors emitted by the assistant stream
         run.on('error', error => {
           if (isControllerClosed) return;
 
           console.error('Streaming error:', error);
-
-          // If the error is due to the run being aborted, we can ignore it
-          if ((error as CustomError).name === 'APIUserAbortError') {
-            // Do nothing; the cancel method will handle closing the controller
+          if (error.name === 'APIUserAbortError') {
+            // ignore, controller will close
           } else {
             if (!isControllerClosed) {
               controller.error(error);
@@ -114,30 +102,20 @@ export const POST = withApiAuthRequired(async req => {
           }
         });
 
-        // Handle the end of the assistant stream
         run.on('end', () => {
           if (isControllerClosed) return;
-
           controller.close();
           isControllerClosed = true;
         });
 
-        // Handle the abort event
         run.on('abort', () => {
           if (isControllerClosed) return;
-
-          console.log('Assistant stream aborted.');
-          // Close the controller if not already closed
-          if (!isControllerClosed) {
-            controller.close();
-            isControllerClosed = true;
-          }
+          controller.close();
+          isControllerClosed = true;
         });
 
-        // Start the run
         run.finalRun().catch(error => {
           if (isControllerClosed) return;
-
           console.error('Error in finalRun:', error);
           if (!isControllerClosed) {
             controller.error(error);
@@ -147,7 +125,6 @@ export const POST = withApiAuthRequired(async req => {
       },
       cancel(reason) {
         console.log('Stream cancelled:', reason);
-        // Abort the run
         run.abort();
       },
     });
@@ -162,12 +139,14 @@ export const POST = withApiAuthRequired(async req => {
     console.error('Error handling message:', error);
 
     const customError = error as CustomError;
-    const statusCode = customError.statusCode || 500;
-    const errorMessage = customError.message || 'Failed to process message.';
-
-    return new Response(JSON.stringify({ error: errorMessage }), {
-      status: statusCode,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return new NextResponse(
+      JSON.stringify({
+        error: customError.message || 'Failed to process message.',
+      }),
+      {
+        status: customError.statusCode || 500,
+        headers: { 'Content-Type': 'application/json' },
+      },
+    );
   }
 });

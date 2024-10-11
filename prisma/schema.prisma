@@ -44,11 +44,11 @@ model Ticket {
   clientName     String
   clientEmail    String?    // Optional
   clientPhone    String?    // Optional
-  statusId       Int
+  statusId       String
   status         Status     @relation(fields: [statusId], references: [id])
-  categoryId     Int
+  categoryId     String
   category       Category   @relation(fields: [categoryId], references: [id])
-  subCategoryId  Int
+  subCategoryId  String
   subCategory    SubCategory @relation(fields: [subCategoryId], references: [id])
   notes          Note[]     @relation("TicketNotes")
   createdAt      DateTime   @default(now())
@@ -57,14 +57,14 @@ model Ticket {
 
 // Status model
 model Status {
-  id    Int      @id @default(autoincrement())
+  id    String      @id @default(cuid())
   name  String   @unique
   tickets Ticket[]
 }
 
 // Category model
 model Category {
-  id          Int          @id @default(autoincrement())
+  id          String          @id @default(cuid())
   name        String       @unique
   subCategories SubCategory[]
   tickets     Ticket[]
@@ -72,9 +72,9 @@ model Category {
 
 // SubCategory model
 model SubCategory {
-  id         Int       @id @default(autoincrement())
+  id         String       @id @default(cuid())
   name       String    @unique
-  categoryId Int
+  categoryId String
   category   Category  @relation(fields: [categoryId], references: [id])
   tickets    Ticket[]
 }
