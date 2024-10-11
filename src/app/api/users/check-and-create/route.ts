@@ -1,8 +1,66 @@
-import { NextResponse } from 'next/server';
+import { NextResponse, NextRequest } from 'next/server';
 import prisma from '@/lib/db/prisma/prisma';
+import jwt, { JwtHeader, SigningKeyCallback } from 'jsonwebtoken';
+import jwksClient from 'jwks-rsa';
+import { CustomError } from '@/lib/interfaces/utilities/custom-error/custom-error';
 
-export async function POST(request: Request) {
+const AUTH0_DOMAIN = process.env.AUTH0_DOMAIN; // e.g., "your-domain.us.auth0.com"
+const API_IDENTIFIER = process.env.API_IDENTIFIER; // e.g., "https://your-api-identifier"
+
+// Set up the JWKS client
+const client = jwksClient({
+  jwksUri: `https://${AUTH0_DOMAIN}/.well-known/jwks.json`,
+});
+
+function getKey(header: JwtHeader, callback: SigningKeyCallback) {
+  client.getSigningKey(header.kid!, function (err, key) {
+    if (err) {
+      callback(err, undefined);
+    } else if (key) {
+      const signingKey = key.getPublicKey();
+      callback(null, signingKey);
+    } else {
+      callback(new Error('Signing key is undefined'), undefined);
+    }
+  });
+}
+
+export async function POST(request: NextRequest) {
   try {
+    // Extract the Authorization header
+    const authHeader = request.headers.get('authorization');
+
+    if (!authHeader || !authHeader.startsWith('Bearer ')) {
+      return NextResponse.json(
+        { error: 'Missing or invalid authorization header.' },
+        { status: 401 },
+      );
+    }
+
+    const token = authHeader.split(' ')[1];
+
+    // Verify the token
+    await new Promise<void>((resolve, reject) => {
+      jwt.verify(
+        token,
+        getKey,
+        {
+          audience: API_IDENTIFIER,
+          issuer: `https://${AUTH0_DOMAIN}/`,
+          algorithms: ['RS256'],
+        },
+        err => {
+          if (err) {
+            console.error('JWT verification failed:', err);
+            reject(err);
+          } else {
+            resolve();
+          }
+        },
+      );
+    });
+
+    // Proceed with the original logic
     const data = await request.json();
 
     const {
@@ -60,6 +118,12 @@ export async function POST(request: Request) {
     }
   } catch (error: unknown) {
     console.error('Error in /api/users/check-and-create:', error);
+
+    const customError = error as CustomError;
+
+    if (customError.name === 'JsonWebTokenError') {
+      return NextResponse.json({ error: 'Invalid token.' }, { status: 401 });
+    }
 
     return NextResponse.json(
       { error: 'Internal Server Error' },
