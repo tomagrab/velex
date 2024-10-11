@@ -4,6 +4,8 @@ export default withMiddlewareAuthRequired();
 
 export const config = {
   matcher: [
+    '/',
+    '/:path*',
     '/assets',
     '/tickets',
     '/users',
