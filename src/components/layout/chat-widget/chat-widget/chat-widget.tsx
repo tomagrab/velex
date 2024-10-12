@@ -122,7 +122,6 @@ export default function ChatWidget() {
       const customError = error as CustomError;
 
       if (customError.name === 'AbortError') {
-        console.log('Stream aborted by user.');
         // Assign a unique ID to the info message
         const infoMessageId = uuidv4();
 
