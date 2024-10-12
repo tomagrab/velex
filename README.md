@@ -164,11 +164,13 @@ Velex will use either Clerk or Auth0 for user authentication, however, as of wri
 
 ### Test Promps for the assistant chatbot
 
+<details>
+    <summary>Click to expand test prompts - This section is really long</summary>
 1. Code Snippet Request:
 
-   - Can you show me a JavaScript function that calculates the factorial of a number?
-   - Expected Markdown: A code block with a JavaScript function.
-   - Output Example:
+- Can you show me a JavaScript function that calculates the factorial of a number?
+- Expected Markdown: A code block with a JavaScript function.
+- Output Example:
 
 ```javascript
 function factorial(n) {
@@ -359,6 +361,7 @@ Alternatively, you can directly link your Git repository to Vercel, and it will 
 
 You can access the official React documentation here: [React Documentation](https://reactjs.org/docs/getting-started.html)
 
+</details>
 </details>
 
 #
