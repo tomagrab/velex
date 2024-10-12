@@ -11,20 +11,21 @@ import {
 import Link from 'next/link';
 import { Loader } from 'lucide-react';
 
-export default function SidebarMenuItem(menuItem: SidebarMenuItemProps) {
+export default function SidebarMenuItem({
+  title,
+  link,
+  icon,
+}: SidebarMenuItemProps) {
   const { user, error, isLoading } = useUser();
+  const requiresAuth = ['Assets', 'Tickets', 'Users'].includes(title);
 
-  const titlesRequiringAuth = ['Assets', 'Tickets', 'Users'];
-
-  if (isLoading && titlesRequiringAuth.includes(menuItem.title)) {
+  // Show the loader if loading, but only for authenticated routes
+  if (isLoading && requiresAuth) {
     return <Loader className="h-6 w-6 animate-spin" />;
   }
 
-  if (error && titlesRequiringAuth.includes(menuItem.title)) {
-    return null;
-  }
-
-  if (!user && titlesRequiringAuth.includes(menuItem.title)) {
+  // Prevent rendering if error exists or no user is authenticated for the routes requiring auth
+  if (requiresAuth && (error || !user)) {
     return null;
   }
 
@@ -32,9 +33,9 @@ export default function SidebarMenuItem(menuItem: SidebarMenuItemProps) {
     <TooltipProvider>
       <Tooltip>
         <TooltipTrigger asChild>
-          <Link href={menuItem.link}>{menuItem.icon}</Link>
+          <Link href={link}>{icon}</Link>
         </TooltipTrigger>
-        <TooltipContent>{menuItem.title}</TooltipContent>
+        <TooltipContent>{title}</TooltipContent>
       </Tooltip>
     </TooltipProvider>
   );
