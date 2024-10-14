@@ -1,3 +1,4 @@
+import { isValidPhoneNumber } from 'react-phone-number-input';
 import { z } from 'zod';
 
 export const ticketSchema = z.object({
@@ -7,7 +8,12 @@ export const ticketSchema = z.object({
   assignedToId: z.string(),
   clientName: z.string(),
   clientEmail: z.string().email().optional(),
-  clientPhone: z.string().optional(),
+  clientPhone: z
+    .string()
+    .refine(isValidPhoneNumber, {
+      message: 'Invalid phone number',
+    })
+    .optional(),
   statusId: z.string(),
   categoryId: z.string(),
   subCategoryId: z.string(),
