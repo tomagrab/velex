@@ -58,14 +58,14 @@ export default function TicketForm({
       .then(res => res.json())
       .then(data => setTicketStatus(data));
 
-    fetch('/api/categories')
+    fetch('/api/category')
       .then(res => res.json())
       .then(data => setTicketCategory(data));
   }, [user]);
 
   useEffect(() => {
     if (ticketCategory.length > 0 || ticket?.categoryId) {
-      fetch(`/api/subcategories/${ticket?.categoryId ?? ticketCategory[0].id}`)
+      fetch(`/api/subcategory/${ticket?.categoryId ?? ticketCategory[0].id}`)
         .then(res => res.json())
         .then(data => setTicketSubCategory(data));
     }
