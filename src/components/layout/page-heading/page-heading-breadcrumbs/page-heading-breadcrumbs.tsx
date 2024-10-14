@@ -31,16 +31,14 @@ export default function PageHeadingBreadcrumbs() {
 
   // Detect if the last part of the pathname is a user ID (in this case, for simplicity, assuming a user page follows a pattern like /users/[id])
   const isUserPage = pathnameParts.some(part => part.id.includes('users'));
-  console.log(pathnameParts);
-  console.log(isUserPage);
 
   // Fetch user name if the page is a user page
   useEffect(() => {
     const fetchUserName = async () => {
-      const userId = pathnameParts[pathnameParts.length - 1].name;
-      const response = await fetch(
-        `${process.env.APP_ENV_URL}/api/users/${userId}/name`,
-      );
+      const userId = pathnameParts[pathnameParts.length - 1].id
+        .split('/')
+        .pop();
+      const response = await fetch(`/api/users/${userId}/name`);
       if (response.ok) {
         const data = await response.json();
         setUserName(data.name);
