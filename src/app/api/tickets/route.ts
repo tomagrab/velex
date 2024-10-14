@@ -54,11 +54,22 @@ export const POST = withApiAuthRequired(async (request: NextRequest) => {
     const newTicket = await prisma.ticket.create({
       data: {
         ...data,
-        creator: { connect: { id: data.creatorId } },
+        creatorId: data.creatorId,
+        lastEditedBy: { connect: { id: data.lastEditedById } },
+        assignedTo: { connect: { id: data.assignedToId } },
         owner: { connect: { id: data.ownerId } },
         status: { connect: { id: data.statusId } },
         category: { connect: { id: data.categoryId } },
         subCategory: { connect: { id: data.subCategoryId } },
+        notes: {
+          create: [
+            {
+              content: data.notes,
+              creator: { connect: { id: data.creatorId } },
+              lastEditedBy: { connect: { id: data.lastEditedById } },
+            },
+          ],
+        },
       },
     });
 
