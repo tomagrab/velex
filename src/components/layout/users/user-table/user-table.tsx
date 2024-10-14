@@ -1,6 +1,7 @@
 'use client';
 
 import DataTable from '@/components/layout/data-table/data-table';
+import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { User } from '@prisma/client';
 import { ColumnDef } from '@tanstack/react-table';
@@ -45,7 +46,11 @@ export const userColumns: ColumnDef<User>[] = [
   {
     accessorKey: 'actions',
     header: 'Actions',
-    cell: ({ row }) => <Link href={`/users/${row.original.id}`}>View</Link>,
+    cell: ({ row }) => (
+      <Button variant={`ghost`}>
+        <Link href={`/users/${row.original.id}`}>View</Link>
+      </Button>
+    ),
   },
 ];
 
