@@ -10,10 +10,11 @@ import {
 } from '@/components/ui/breadcrumb';
 import { PathnamePartType } from '@/lib/types/layout/page-heading/page-heading-breadcrumbs/pathname-part/pathname-part-type';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export default function PageHeadingBreadcrumbs() {
-  // Get the current pathname
   const pathname = usePathname();
+  const [userName, setUserName] = useState<string | null>(null);
 
   // Split the pathname into parts
   const pathnameParts: PathnamePartType[] = pathname
@@ -28,7 +29,29 @@ export default function PageHeadingBreadcrumbs() {
       };
     });
 
-  // Function to format the pathname parts by capitalizing the first letter of each part
+  // Detect if the last part of the pathname is a user ID (in this case, for simplicity, assuming a user page follows a pattern like /users/[id])
+  const isUserPage = pathnameParts.some(part => part.id.includes('users'));
+  console.log(pathnameParts);
+  console.log(isUserPage);
+
+  // Fetch user name if the page is a user page
+  useEffect(() => {
+    const fetchUserName = async () => {
+      const userId = pathnameParts[pathnameParts.length - 1].name;
+      const response = await fetch(
+        `http://localhost:3000/api/users/${userId}/name`,
+      );
+      if (response.ok) {
+        const data = await response.json();
+        setUserName(data.name);
+      }
+    };
+
+    if (isUserPage) {
+      fetchUserName();
+    }
+  }, [isUserPage, pathnameParts]);
+
   const formatPathnameParts = (pathnameParts: PathnamePartType[]) => {
     return pathnameParts.map(part => {
       return {
@@ -38,15 +61,18 @@ export default function PageHeadingBreadcrumbs() {
     });
   };
 
-  // Format the pathname parts
   const formattedPathnameParts = formatPathnameParts(pathnameParts);
+
+  // Replace last part with user name if it's a user page
+  if (isUserPage && userName) {
+    formattedPathnameParts[formattedPathnameParts.length - 1].name = userName;
+  }
 
   // If there are no pathname parts, return null
   if (formattedPathnameParts.length === 0) {
     return null;
   }
 
-  // If there is only one pathname part, return the breadcrumb with the home link and the current page
   if (formattedPathnameParts.length === 1) {
     return (
       <Breadcrumb>
@@ -67,7 +93,6 @@ export default function PageHeadingBreadcrumbs() {
     );
   }
 
-  // If there are more than one pathname parts, return the breadcrumb with the home link, the first part, and the current page
   return (
     <Breadcrumb>
       <BreadcrumbList className="text-slate-400">
