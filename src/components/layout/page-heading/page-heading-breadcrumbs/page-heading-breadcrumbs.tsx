@@ -39,7 +39,7 @@ export default function PageHeadingBreadcrumbs() {
     const fetchUserName = async () => {
       const userId = pathnameParts[pathnameParts.length - 1].name;
       const response = await fetch(
-        `http://localhost:3000/api/users/${userId}/name`,
+        `${process.env.APP_ENV_URL}/api/users/${userId}/name`,
       );
       if (response.ok) {
         const data = await response.json();
