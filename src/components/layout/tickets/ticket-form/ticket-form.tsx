@@ -113,7 +113,11 @@ export default function TicketForm({
             availableCategory={availableCategory}
             availableSubCategory={availableSubCategory}
           />
-          <StatusFields form={form} isEditMode={isEditMode} availableStatus={availableStatus} />
+          <StatusFields
+            form={form}
+            isEditMode={isEditMode}
+            availableStatus={availableStatus}
+          />
         </section>
 
         <section className="flex w-full items-center gap-4 py-4">
