@@ -5,19 +5,18 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Dispatch, SetStateAction } from 'react';
 import { Ticket } from '@prisma/client';
 import TicketsTable from '@/components/layout/tickets/ticket-table/ticket-table';
 import { Button } from '@/components/ui/button';
 
 type TicketsTabProps = {
   tickets: Ticket[];
-  setActiveTab: Dispatch<SetStateAction<string>>;
+  handleCreateButtonClick: () => void;
 };
 
 export default function TicketsTableTab({
   tickets,
-  setActiveTab,
+  handleCreateButtonClick,
 }: TicketsTabProps) {
   return (
     <Card>
@@ -27,7 +26,7 @@ export default function TicketsTableTab({
           <CardDescription>View and manage your tickets here.</CardDescription>
         </div>
         <div>
-          <Button onClick={() => setActiveTab('CreateTicketTab')}>
+          <Button onClick={() => handleCreateButtonClick()}>
             Create Ticket
           </Button>
         </div>

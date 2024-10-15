@@ -1,3 +1,5 @@
+'use client';
+
 import {
   Card,
   CardContent,
@@ -8,16 +10,33 @@ import {
 import { Badge } from '@/components/ui/badge';
 import TicketForm from '@/components/layout/tickets/ticket-form/ticket-form';
 import { cn } from '@/lib/utils';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
-type CreateTicketTabProps = {
-  handleEditModeClick: () => void;
-  isEditMode: boolean;
+type TicketFormWrapperProps = {
+  ticketId: string;
 };
 
-export default function CreateTicketTab({
-  handleEditModeClick,
-  isEditMode,
-}: CreateTicketTabProps) {
+export default function TicketFormWrapper({
+  ticketId,
+}: TicketFormWrapperProps) {
+  const router = useRouter();
+  const searchParams = useSearchParams(); // Read query parameters
+
+  // Get initial values from the URL query params
+  const queryIsEditMode = searchParams.get('isEditMode') === 'true';
+
+  const [isEditMode, setIsEditMode] = useState(queryIsEditMode);
+
+  // Sync state with URL when the user switches tabs
+  useEffect(() => {
+    router.replace(`?isEditMode=${isEditMode}`);
+  }, [isEditMode, router]);
+
+  const handleEditModeClick = () => {
+    setIsEditMode(prev => !prev);
+  };
+
   return (
     <Card>
       <CardHeader>
@@ -42,7 +61,7 @@ export default function CreateTicketTab({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <TicketForm isEditMode={isEditMode} />
+        <TicketForm isEditMode={isEditMode} ticketId={ticketId} />
       </CardContent>
     </Card>
   );
