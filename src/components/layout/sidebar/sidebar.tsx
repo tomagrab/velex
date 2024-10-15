@@ -3,7 +3,7 @@ import SidebarMenu from './sidebar-menu/sidebar-menu';
 
 export default function Sidebar() {
   return (
-    <aside className="sidebar flex h-[100dvh] w-16 flex-col items-center gap-8 bg-slate-800 text-white dark:bg-background">
+    <aside className="sidebar flex h-[100dvh] min-w-16 flex-col items-center gap-8 bg-slate-800 text-white dark:bg-background">
       <div className="sidebar__logo h-16">
         <Image
           className="object-"

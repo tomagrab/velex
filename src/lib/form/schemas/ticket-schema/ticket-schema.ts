@@ -33,8 +33,5 @@ export const ticketSchema = z.object({
     .string()
     .min(1, { message: 'Subcategory is required' })
     .max(255, { message: 'Subcategory is too long' }),
-  notes: z
-    .string()
-    .min(1, { message: 'Notes are required' })
-    .max(5000, { message: 'Notes are too long' }),
+  notes: z.array(z.string().min(1, { message: 'Note content is required' })),
 });

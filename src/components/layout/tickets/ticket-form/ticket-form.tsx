@@ -41,22 +41,10 @@ import {
 import { cn } from '@/lib/utils';
 import { Textarea } from '@/components/ui/textarea';
 import { PhoneInput } from '@/components/ui/phone-input';
+import { CreateTicket } from '@/app/server/actions/tickets/ticket-actions';
 
 type TicketFormProps = {
-  ticket?: {
-    id: string;
-    creatorId: string;
-    ownerId: string;
-    lastEditedById: string;
-    assignedToId: string;
-    clientName: string;
-    clientEmail: string;
-    clientPhone: string;
-    statusId: string;
-    categoryId: string;
-    subCategoryId: string;
-    notes: string;
-  };
+  ticket?: z.infer<typeof ticketSchema>;
   isEditMode?: boolean;
 };
 
@@ -141,7 +129,7 @@ export default function TicketForm({
       statusId: ticket?.statusId ?? ticketStatus.id ?? '',
       categoryId: ticket?.categoryId ?? ticketCategory.id ?? '',
       subCategoryId: ticket?.subCategoryId ?? ticketSubCategory.id ?? '',
-      notes: ticket?.notes || '',
+      notes: ticket?.notes ? ticket.notes : [],
     },
   });
 
@@ -159,7 +147,7 @@ export default function TicketForm({
         statusId: ticket?.statusId || ticketStatus.id,
         categoryId: ticket?.categoryId || ticketCategory.id,
         subCategoryId: ticket?.subCategoryId || ticketSubCategory.id,
-        notes: ticket?.notes || '',
+        notes: ticket?.notes ? ticket.notes : [],
       });
     }
   }, [
@@ -187,36 +175,13 @@ export default function TicketForm({
     return <div>Not authenticated</div>;
   }
 
-  // Submit handler
-  const handleSubmit = async (data: z.infer<typeof ticketSchema>) => {
-    try {
-      const response = await fetch(
-        isEditMode && ticket?.id ? `/api/tickets/${ticket.id}` : '/api/tickets',
-        {
-          method: isEditMode ? 'PUT' : 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(data),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error('Failed to submit the form');
-      }
-
-      console.log('Form submitted successfully', data);
-    } catch (error) {
-      console.error('Error submitting form:', error);
-    }
-  };
-
   return (
     <Form {...form}>
-      <form
-        onSubmit={form.handleSubmit(handleSubmit)}
-        className="flex flex-wrap items-center"
-      >
+      <form action={CreateTicket} className="flex flex-wrap items-center">
+        <input type="hidden" {...form.register('creatorId')} />
+        <input type="hidden" {...form.register('ownerId')} />
+        <input type="hidden" {...form.register('lastEditedById')} />
+        <input type="hidden" {...form.register('assignedToId')} />
         {/* This section should take 1/2 width of the form container */}
         <section className="flex w-full flex-col gap-2 pr-2 md:w-1/2">
           {/* Client Name Field */}
@@ -307,6 +272,7 @@ export default function TicketForm({
                         <CommandGroup>
                           {availableCategory.map(category => (
                             <CommandItem
+                              defaultValue={category.id}
                               value={category.name}
                               key={category.id}
                               onSelect={() => {
@@ -380,6 +346,7 @@ export default function TicketForm({
                             )
                             .map(subCategory => (
                               <CommandItem
+                                defaultValue={subCategory.id}
                                 value={subCategory.name}
                                 key={subCategory.id}
                                 onSelect={() => {
@@ -421,7 +388,7 @@ export default function TicketForm({
                   onValueChange={field.onChange}
                   defaultValue={
                     availableStatus.find(status => status.name === 'Open')
-                      ?.id ?? availableStatus[0]?.id
+                      ?.id || availableStatus[0]?.id
                   } // Default to "Open" or first status if not found
                 >
                   <FormControl>
@@ -429,7 +396,7 @@ export default function TicketForm({
                       <SelectValue
                         placeholder={
                           availableStatus.find(status => status.name === 'Open')
-                            ?.name ?? availableStatus[0]?.name
+                            ?.name || availableStatus[0]?.name
                         }
                       />
                     </SelectTrigger>
