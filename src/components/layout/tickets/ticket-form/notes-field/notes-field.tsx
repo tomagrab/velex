@@ -14,6 +14,7 @@ import NotesHistory from './notes-history/notes-history';
 
 type NotesFieldsProps = {
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
+  isEditMode?: boolean;
   ticket: Prisma.TicketGetPayload<{
     include: {
       creator: true;
@@ -26,12 +27,17 @@ type NotesFieldsProps = {
   }> | null;
 };
 
-export default function NotesField({ form, ticket }: NotesFieldsProps) {
+export default function NotesField({
+  form,
+  isEditMode,
+  ticket,
+}: NotesFieldsProps) {
   return (
     <>
       <div className="w-3/4">
         <FormLabel>New Note</FormLabel>
         <FormField
+          disabled={!isEditMode}
           control={form.control}
           name="notes.0.content"
           render={({ field }) => (

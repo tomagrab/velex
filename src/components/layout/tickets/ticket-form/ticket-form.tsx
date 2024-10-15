@@ -101,7 +101,7 @@ export default function TicketForm({
         <input type="hidden" {...form.register('assignedToId')} />
         {/* This section should take 1/2 width of the form container */}
         <section className="flex w-full flex-col gap-2 pr-2 md:w-1/2">
-          <ClientInformationFields form={form} />
+          <ClientInformationFields form={form} isEditMode={isEditMode} />
         </section>
 
         {/* This section should take 1/2 width of the form container */}
@@ -109,19 +109,20 @@ export default function TicketForm({
           {/* Category ID Field */}
           <CategoryFields
             form={form}
+            isEditMode={isEditMode}
             availableCategory={availableCategory}
             availableSubCategory={availableSubCategory}
           />
-          <StatusFields form={form} availableStatus={availableStatus} />
+          <StatusFields form={form} isEditMode={isEditMode} availableStatus={availableStatus} />
         </section>
 
         <section className="flex w-full items-center gap-4 py-4">
-          <NotesField form={form} ticket={ticket} />
+          <NotesField form={form} isEditMode={isEditMode} ticket={ticket} />
         </section>
 
         <section>
           <ButtonField
-            ticketStates={{
+            ticketFormStates={{
               isEditMode,
               isUpdating,
               isLoading,

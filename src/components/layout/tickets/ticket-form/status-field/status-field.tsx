@@ -21,12 +21,13 @@ import { z } from 'zod';
 
 type StatusFieldsProps = {
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
-
+  isEditMode?: boolean;
   availableStatus: Status[] | null;
 };
 
 export default function StatusFields({
   form,
+  isEditMode,
   availableStatus,
 }: StatusFieldsProps) {
   // Effect to default to first available status if not already set
@@ -55,7 +56,7 @@ export default function StatusFields({
               <FormControl>
                 <div>
                   <input type="hidden" {...field} />
-                  <SelectTrigger>
+                  <SelectTrigger disabled={!isEditMode}>
                     <SelectValue
                       placeholder={
                         availableStatus.find(status => status.name === 'Open')

@@ -30,13 +30,14 @@ import { useEffect } from 'react';
 
 type CategoryFieldsProps = {
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
-
+  isEditMode?: boolean;
   availableCategory: Category[] | null;
   availableSubCategory: SubCategory[] | null;
 };
 
 export default function CategoryFields({
   form,
+  isEditMode,
   availableCategory,
   availableSubCategory,
 }: CategoryFieldsProps) {
@@ -96,7 +97,7 @@ export default function CategoryFields({
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
-                      // Default to the first available category
+                      disabled={!isEditMode}
                       defaultValue={availableCategory[0].id}
                       variant="outline"
                       role="combobox"
@@ -169,6 +170,7 @@ export default function CategoryFields({
                 <Popover>
                   <PopoverTrigger asChild>
                     <Button
+                      disabled={!isEditMode}
                       variant="outline"
                       role="combobox"
                       className={cn(

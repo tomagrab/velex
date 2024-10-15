@@ -2,15 +2,15 @@ import { Button } from '@/components/ui/button';
 import { Loader } from 'lucide-react';
 
 type ButtonFieldProps = {
-  ticketStates: {
+  ticketFormStates: {
     isEditMode: boolean;
     isUpdating: boolean;
     isLoading: boolean;
   };
 };
 
-export default function ButtonField({ ticketStates }: ButtonFieldProps) {
-  const { isEditMode, isUpdating, isLoading } = ticketStates;
+export default function ButtonField({ ticketFormStates }: ButtonFieldProps) {
+  const { isEditMode, isUpdating, isLoading } = ticketFormStates;
 
   if (!isEditMode) {
     return null;

@@ -13,15 +13,18 @@ import { z } from 'zod';
 
 type ClientInformationFieldsProps = {
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
+  isEditMode?: boolean;
 };
 
 export default function ClientInformationFields({
   form,
+  isEditMode,
 }: ClientInformationFieldsProps) {
   return (
     <>
       {/* Client Name Field */}
       <FormField
+        disabled={!isEditMode}
         control={form.control}
         name="clientName"
         render={({ field }) => (
@@ -36,6 +39,7 @@ export default function ClientInformationFields({
       />
       {/* Client Email Field */}
       <FormField
+        disabled={!isEditMode}
         control={form.control}
         name="clientEmail"
         render={({ field }) => (
@@ -54,6 +58,7 @@ export default function ClientInformationFields({
       />
       {/* Client Phone Field */}
       <FormField
+        disabled={!isEditMode}
         control={form.control}
         name="clientPhone"
         render={({ field }) => (
