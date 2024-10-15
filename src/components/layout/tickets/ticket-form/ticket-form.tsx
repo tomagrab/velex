@@ -30,6 +30,7 @@ export default function TicketForm({
 
   const {
     ticket,
+    isUpdating,
     availableStatus,
     availableCategory,
     availableSubCategory,
@@ -114,12 +115,18 @@ export default function TicketForm({
           <StatusFields form={form} availableStatus={availableStatus} />
         </section>
 
-        <section className="flex w-full py-4">
+        <section className="flex w-full items-center gap-4 py-4">
           <NotesField form={form} ticket={ticket} />
         </section>
 
         <section>
-          <ButtonField isEditMode={isEditMode} />
+          <ButtonField
+            ticketStates={{
+              isEditMode,
+              isUpdating,
+              isLoading,
+            }}
+          />
         </section>
       </form>
     </Form>

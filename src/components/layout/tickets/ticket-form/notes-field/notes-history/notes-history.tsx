@@ -24,14 +24,10 @@ export default function NotesHistory({ ticket }: NotesHistoryProps) {
 
   return (
     <>
-      <FormLabel>Existing Notes</FormLabel>
+      <FormLabel>Previous Notes</FormLabel>
       <ScrollArea className="rounded-md border p-4">
-        {ticket.notes.map((note, ) => (
-          <NotesHistoryItem
-            key={note.id}
-            ticket={ticket}
-            note={note}
-          />
+        {ticket.notes.map(note => (
+          <NotesHistoryItem key={note.id} ticket={ticket} note={note} />
         ))}
       </ScrollArea>
     </>

@@ -13,6 +13,7 @@ export const useTicketData = (ticketId?: Ticket['id']) => {
       notes: true;
     };
   }> | null>(null);
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
   const [availableStatus, setAvailableStatus] = useState<Status[] | null>(null);
   const [availableCategory, setAvailableCategory] = useState<Category[] | null>(
     null,
@@ -28,10 +29,14 @@ export const useTicketData = (ticketId?: Ticket['id']) => {
       try {
         // Fetch ticket if editing
         if (ticketId) {
-          const ticketData = await fetch(`/api/tickets/${ticketId}`).then(res =>
-            res.json(),
-          );
+          const ticketData = await fetch(`/api/tickets/${ticketId}`)
+            .then(res => res.json())
+            .catch(error => {
+              const customError = error as CustomError;
+              setError(customError);
+            });
           setTicket(ticketData);
+          setIsUpdating(true);
         }
 
         // Fetch available statuses, categories, and subcategories
@@ -57,6 +62,7 @@ export const useTicketData = (ticketId?: Ticket['id']) => {
 
   return {
     ticket,
+    isUpdating,
     availableStatus,
     availableCategory,
     availableSubCategory,
