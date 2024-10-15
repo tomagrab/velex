@@ -36,36 +36,38 @@ export const ticketsColumns: ColumnDef<Ticket>[] = [
   },
 
   {
-    accessorKey: 'creator',
+    accessorKey: 'creator.name', // Access specific field in creator
     header: 'Creator',
   },
   {
-    accessorKey: 'owner',
+    accessorKey: 'owner.name', // Access specific field in owner
     header: 'Owner',
   },
   {
-    accessorKey: 'assignedTo',
-    header: 'assignedTo',
+    accessorKey: 'assignedTo.name', // Access specific field in assignedTo
+    header: 'Assigned To',
   },
   {
-    accessorKey: 'status',
-    header: 'status',
+    accessorKey: 'status.name', // Access specific field in status
+    header: 'Status',
   },
   {
-    accessorKey: 'category',
+    accessorKey: 'category.name', // Access specific field in category
     header: 'Category',
   },
   {
-    accessorKey: 'subCategory',
+    accessorKey: 'subCategory.name', // Access specific field in subCategory
     header: 'Sub Category',
   },
   {
-    accessorKey: 'createdOn',
+    accessorKey: 'createdAt', // Assuming 'createdAt' is a date field
     header: 'Created',
+    cell: ({ row }) => new Date(row.original.createdAt).toLocaleString(), // Format date
   },
   {
-    accessorKey: 'updatedOn',
+    accessorKey: 'updatedAt', // Assuming 'updatedAt' is a date field
     header: 'Updated',
+    cell: ({ row }) => new Date(row.original.updatedAt).toLocaleString(), // Format date
   },
   {
     accessorKey: 'actions',

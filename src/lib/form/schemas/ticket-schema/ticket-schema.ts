@@ -1,37 +1,67 @@
 import { isValidPhoneNumber } from 'react-phone-number-input';
 import { z } from 'zod';
 
+export const noteSchema = z.object({
+  id: z.string().optional(),
+  content: z
+    .string()
+    .min(1, { message: 'Note content is required' })
+    .max(10000, { message: 'Note content is too long' }),
+  creatorId: z.string().min(1),
+  creator: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .optional(), // Add creator info if available
+  lastEditedById: z.string().min(1),
+  lastEditedBy: z
+    .object({
+      id: z.string(),
+      name: z.string(),
+    })
+    .optional(), // Add editor info if available
+  createdAt: z.date().optional(),
+  updatedAt: z.date().optional(),
+});
+
 export const ticketSchema = z.object({
   creatorId: z.string().min(1).max(255),
   ownerId: z.string().min(1).max(255),
   lastEditedById: z.string().min(1).max(255),
   assignedToId: z.string().min(1).max(255),
-  clientName: z
-    .string()
-    .min(1, { message: 'Client name is required' })
-    .max(255, { message: 'Client name is too long' }),
-  clientEmail: z
-    .string()
-    .max(255, { message: 'Client email is too long' })
-    .email({ message: 'Invalid email address' })
-    .or(z.literal('')),
+  clientName: z.string().min(1).max(255),
+  clientEmail: z.string().email().nullable().optional(),
   clientPhone: z
     .string()
-    .refine(isValidPhoneNumber, {
+    .refine(phone => phone === null || isValidPhoneNumber(phone), {
       message: 'Invalid phone number',
     })
-    .or(z.literal('')),
-  statusId: z
-    .string()
-    .min(1, { message: 'Status is required' })
-    .max(255, { message: 'Status is too long' }),
-  categoryId: z
-    .string()
-    .min(1, { message: 'Category is required' })
-    .max(255, { message: 'Category is too long' }),
-  subCategoryId: z
-    .string()
-    .min(1, { message: 'Subcategory is required' })
-    .max(255, { message: 'Subcategory is too long' }),
-  notes: z.array(z.string().min(1, { message: 'Note content is required' })),
+    .nullable()
+    .optional(),
+  statusId: z.string().min(1).max(255),
+  categoryId: z.string().min(1).max(255),
+  subCategoryId: z.string().min(1).max(255),
+  notes: z.array(
+    z.object({
+      id: z.string().optional(),
+      content: z.string().min(1).max(10000),
+      creatorId: z.string().min(1),
+      lastEditedById: z.string().min(1),
+      creator: z
+        .object({
+          id: z.string(),
+          name: z.string(),
+        })
+        .optional(),
+      lastEditedBy: z
+        .object({
+          id: z.string(),
+          name: z.string(),
+        })
+        .optional(),
+      createdAt: z.date().optional(),
+      updatedAt: z.date().optional(),
+    }),
+  ),
 });

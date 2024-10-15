@@ -1,11 +1,22 @@
 import prisma from '@/lib/db/prisma/prisma';
-import { Ticket } from '@prisma/client';
+import { Prisma } from '@prisma/client';
 import { CommonResponse } from '@/lib/types/api/common-response/common-response';
 
 // Utility function to fetch a single ticket for SSR pages
 export const GetTicket = async (
   id: string,
-): Promise<CommonResponse<Ticket | null>> => {
+): Promise<
+  CommonResponse<Prisma.TicketGetPayload<{
+    include: {
+      creator: true;
+      owner: true;
+      status: true;
+      category: true;
+      subCategory: true;
+      notes: true;
+    };
+  }> | null>
+> => {
   try {
     // Fetch the ticket from the database
     const ticket = await prisma.ticket.findUnique({
@@ -29,7 +40,12 @@ export const GetTicket = async (
       };
     }
 
-    return { success: true, data: ticket, error: 'No errors!', status: 200 };
+    return {
+      success: true,
+      data: ticket,
+      error: 'No errors!',
+      status: 200,
+    };
   } catch (error) {
     console.error('Error fetching ticket:', error);
     return {

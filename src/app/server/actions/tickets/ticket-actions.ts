@@ -3,10 +3,10 @@
 import { redirect } from 'next/navigation';
 import { revalidatePath } from 'next/cache';
 import prisma from '@/lib/db/prisma/prisma';
+import { Note } from '@prisma/client';
 
 export const CreateTicket = async (formData: FormData): Promise<void> => {
   try {
-    // Parse the ticket data from the form data
     const parsedTicket = {
       creatorId: formData.get('creatorId') as string,
       ownerId: formData.get('ownerId') as string,
@@ -18,10 +18,13 @@ export const CreateTicket = async (formData: FormData): Promise<void> => {
       statusId: formData.get('statusId') as string,
       categoryId: formData.get('categoryId') as string,
       subCategoryId: formData.get('subCategoryId') as string,
-      notes: formData.getAll('notes') as string[],
+      notes: JSON.parse(formData.get('notes') as string).map((note: Note) => ({
+        content: note.content, // Content of the note
+        creatorId: note.creatorId,
+        lastEditedById: note.lastEditedById,
+      })),
     };
 
-    // Create the ticket in the database
     const newTicket = await prisma.ticket.create({
       data: {
         creator: { connect: { id: parsedTicket.creatorId } },
@@ -35,22 +38,18 @@ export const CreateTicket = async (formData: FormData): Promise<void> => {
         category: { connect: { id: parsedTicket.categoryId } },
         subCategory: { connect: { id: parsedTicket.subCategoryId } },
         notes: {
-          create: parsedTicket.notes.map(note => ({
-            content: note,
-            creator: { connect: { id: parsedTicket.creatorId } },
-            lastEditedBy: { connect: { id: parsedTicket.lastEditedById } },
+          create: parsedTicket.notes.map((note: Note) => ({
+            content: note.content,
+            creator: { connect: { id: note.creatorId } },
+            lastEditedBy: { connect: { id: note.lastEditedById } },
           })),
         },
       },
     });
 
-    // Revalidate the ticket list cache (if you're caching the ticket list)
     revalidatePath('/tickets');
-
-    // Redirect the user to the newly created ticket's page
     redirect(`/tickets/${newTicket.id}`);
   } catch (error) {
-    // Handle the error (this could be logged, displayed, etc.)
     console.error('Error creating ticket:', error);
     throw new Error('Failed to create the ticket');
   }
