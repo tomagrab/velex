@@ -9,7 +9,10 @@ import { Ticket } from '@prisma/client';
 import { UserProfile } from '@auth0/nextjs-auth0/client';
 import { Loader } from 'lucide-react';
 import { ticketSchema } from '@/lib/form/schemas/ticket-schema/ticket-schema';
-import { CreateTicket } from '@/app/server/actions/tickets/ticket-actions';
+import {
+  CreateTicket,
+  UpdateTicket,
+} from '@/app/server/actions/tickets/ticket-actions';
 import { useTicketData } from '@/hooks/tickets/use-ticket-data/use-ticket-data';
 import ClientInformationFields from '@/components/layout/tickets/ticket-form/client-information-fields/client-information-fields';
 import CategoryFields from '@/components/layout/tickets/ticket-form/category-fields/category-fields';
@@ -109,15 +112,17 @@ export default function TicketForm({
 
   const handleSubmit = async (formData: z.infer<typeof ticketSchema>) => {
     try {
-      // Validate the data with Zod
-      const ticketParsed = ticketSchema.parse(formData);
+      if (!ticket) {
+        // Validate the data with Zod
+        const ticketParsed = ticketSchema.parse(formData);
 
-      // Convert the data to FormData
-      const formattedTicketFormData = formatTicketFormData(ticketParsed);
+        // Convert the data to FormData
+        const formattedTicketFormData = formatTicketFormData(ticketParsed);
 
-      // Create the ticket
-      const newTicketId = await CreateTicket(formattedTicketFormData);
-      router.push(`/tickets/${newTicketId}?isEditMode=true`);
+        // Create the ticket
+        const newTicketId = await CreateTicket(formattedTicketFormData);
+        router.push(`/tickets/${newTicketId}?isEditMode=true`);
+      }
     } catch (error) {
       console.error('Error creating ticket:', error);
     }

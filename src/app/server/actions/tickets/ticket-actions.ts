@@ -58,3 +58,60 @@ export const CreateTicket = async (formData: FormData): Promise<string> => {
     throw new Error('Failed to create the ticket');
   }
 };
+
+export const UpdateTicket = async (
+  ticketId: string,
+  formData: FormData,
+): Promise<void> => {
+  console.log('Updating ticket:', formData);
+
+  try {
+    const parsedTicket = {
+      ownerId: formData.get('ownerId') as string,
+      lastEditedById: formData.get('lastEditedById') as string,
+      assignedId: formData.get('assignedId') as string,
+      clientName: formData.get('clientName') as string,
+      clientEmail:
+        formData.get('clientEmail') === '' ? null : formData.get('clientEmail'),
+      clientPhone:
+        formData.get('clientPhone') === '' ? null : formData.get('clientPhone'),
+      statusId: formData.get('statusId') as string,
+      categoryId: formData.get('categoryId') as string,
+      subCategoryId: formData.get('subCategoryId') as string,
+      newNote: {
+        content: formData.get('notes[0].content') as string,
+        creatorId: formData.get('notes[0].creatorId') as string,
+        lastEditedById: formData.get('notes[0].lastEditedById') as string,
+      },
+    };
+
+    await prisma.ticket.update({
+      where: { id: ticketId },
+      data: {
+        owner: { connect: { id: parsedTicket.ownerId } },
+        lastEditedBy: { connect: { id: parsedTicket.lastEditedById } },
+        assigned: { connect: { id: parsedTicket.assignedId } },
+        clientName: parsedTicket.clientName,
+        clientEmail: parsedTicket.clientEmail as string | null,
+        clientPhone: (parsedTicket.clientPhone as string) || null,
+        status: { connect: { id: parsedTicket.statusId } },
+        category: { connect: { id: parsedTicket.categoryId } },
+        subCategory: { connect: { id: parsedTicket.subCategoryId } },
+        notes: {
+          create: {
+            content: parsedTicket.newNote.content,
+            creator: { connect: { id: parsedTicket.newNote.creatorId } },
+            lastEditedBy: {
+              connect: { id: parsedTicket.newNote.lastEditedById },
+            },
+          },
+        },
+      },
+    });
+
+    revalidatePath(`/tickets/${ticketId}`);
+  } catch (error) {
+    console.error('Error updating ticket:', error);
+    throw new Error('Failed to update the ticket');
+  }
+};
