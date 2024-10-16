@@ -1,8 +1,5 @@
 'use client';
 
-import { GenericAreaChartStacked } from '@/components/layout/charts/generic-area-chart-stacked/generic-area-chart-stacked';
-import { GenericBarChart } from '@/components/layout/charts/generic-bar-chart/generic-bar-chart';
-import { GenericPieChartDonutWithText } from '@/components/layout/charts/generic-pie-chart-donut-with-text/generic-pie-chart-donut-with-text';
 import {
   Card,
   CardContent,
@@ -10,48 +7,32 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-
-import { ChartConfig } from '@/components/ui/chart';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion';
+// import { useRouter, useSearchParams } from 'next/navigation';
+import TicketsPerMonthBarChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-bar-charts/tickets-per-month-bar-chart/tickets-per-month-bar-chart';
+import TicketsByCategoryBarChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-bar-charts/tickets-by-category-bar-chart/tickets-by-category-bar-chart';
+import TicketsByStatusBarChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-bar-charts/tickets-by-status-bar-chart/tickets-by-status-bar-chart';
+import TicketsPerMonthPieChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-pie-charts/tickets-per-month-pie-chart/tickets-per-month-pie-chart';
+import TicketsByCategoryPieChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-pie-charts/tickets-by-category-pie-chart/tickets-by-category-pie-chart';
+import TicketsByStatusPieChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-pie-charts/tickets-by-status-pie-chart/tickets-by-status-pie-chart';
+import { useTicketAnalytics } from '@/hooks/tickets/use-ticket-analytics/use-ticket-analytics';
+import TicketsPerMonthAreaChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-area-charts/tickets-per-month-area-chart/tickets-per-month-area-chart';
+import TicketsByStatusAreaChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-area-charts/tickets-by-status-area-chart/tickets-by-status-area-chart';
+import TicketsByCategoryAreaChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-area-charts/tickets-by-category-area-chart/tickets-by-category-area-chart';
 
 export default function TicketsAnalyticsTab() {
-  const barChartdata = [
-    { key: 'January', value: 400 },
-    { key: 'February', value: 300 },
-    { key: 'March', value: 200 },
-    { key: 'April', value: 278 },
-    { key: 'May', value: 189 },
-    { key: 'June', value: 239 },
-  ];
-
-  const barChartconfig: ChartConfig = {
-    title: { label: 'Tickets' },
-    xLabel: { label: 'Months' },
-    yLabel: { label: 'Tickets' },
-    color: { color: '#3182CE' },
-  };
-
-  const pieChartDonutWithTextData = [
-    { browser: 'chrome', visitors: 275, color: '#2563eb' },
-    { browser: 'safari', visitors: 200, color: '#10b981' },
-    { browser: 'firefox', visitors: 287, color: '#f97316' },
-  ];
-
-  const pieChartDonutWithTextConfig = {
-    chrome: { label: 'Chrome', color: '#2563eb' },
-    safari: { label: 'Safari', color: '#10b981' },
-    firefox: { label: 'Firefox', color: '#f97316' },
-  };
-
-  const areaChartData = [
-    { month: 'January', desktop: 186, mobile: 80 },
-    { month: 'February', desktop: 305, mobile: 200 },
-    { month: 'March', desktop: 237, mobile: 120 },
-  ];
-
-  const areaChartConfig = {
-    desktop: { label: 'Desktop', color: '#2563eb' },
-    mobile: { label: 'Mobile', color: '#10b981' },
-  };
+  const {
+    loading,
+    error,
+    ticketsPerMonth,
+    ticketsByCategory,
+    ticketsByStatus,
+  } = useTicketAnalytics();
 
   return (
     <Card>
@@ -62,35 +43,68 @@ export default function TicketsAnalyticsTab() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex flex-col lg:flex-row">
-          <div className="flex-1">
-            <GenericBarChart
-              data={barChartdata}
-              dataKey="key"
-              valueKey="value"
-              getData={() => barChartdata}
-              config={barChartconfig}
-            />
-          </div>
-          <div className="flex-1">
-            <GenericPieChartDonutWithText
-              data={pieChartDonutWithTextData}
-              dataKey="browser"
-              valueKey="visitors"
-              getData={() => pieChartDonutWithTextData}
-              config={pieChartDonutWithTextConfig}
-            />
-          </div>
-          <div className="flex-1">
-            <GenericAreaChartStacked
-              data={areaChartData}
-              xAxisKey="month"
-              yKeys={['desktop', 'mobile']}
-              getData={() => areaChartData}
-              config={areaChartConfig}
-            />
-          </div>
-        </div>
+        <Accordion type="multiple" className="w-full">
+          <AccordionItem value="bar-charts">
+            <AccordionTrigger>Bar Charts</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 lg:flex-row">
+              <TicketsPerMonthBarChart
+                loading={loading}
+                error={error}
+                ticketsPerMonth={ticketsPerMonth}
+              />
+              <TicketsByCategoryBarChart
+                loading={loading}
+                error={error}
+                ticketsByCategory={ticketsByCategory}
+              />
+              <TicketsByStatusBarChart
+                loading={loading}
+                error={error}
+                ticketsByStatus={ticketsByStatus}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="pie-charts">
+            <AccordionTrigger>Pie Charts</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 lg:flex-row">
+              <TicketsPerMonthPieChart
+                loading={loading}
+                error={error}
+                ticketsPerMonth={ticketsPerMonth}
+              />
+              <TicketsByCategoryPieChart
+                loading={loading}
+                error={error}
+                ticketsByCategory={ticketsByCategory}
+              />
+              <TicketsByStatusPieChart
+                loading={loading}
+                error={error}
+                ticketsByStatus={ticketsByStatus}
+              />
+            </AccordionContent>
+          </AccordionItem>
+          <AccordionItem value="line-charts">
+            <AccordionTrigger>Stacked Area Charts</AccordionTrigger>
+            <AccordionContent className="flex flex-col gap-4 lg:flex-row">
+              <TicketsPerMonthAreaChart
+                loading={loading}
+                error={error}
+                ticketsPerMonth={ticketsPerMonth}
+              />
+              <TicketsByCategoryAreaChart
+                loading={loading}
+                error={error}
+                ticketsByCategory={ticketsByCategory}
+              />
+              <TicketsByStatusAreaChart
+                loading={loading}
+                error={error}
+                ticketsByStatus={ticketsByStatus}
+              />
+            </AccordionContent>
+          </AccordionItem>
+        </Accordion>
       </CardContent>
     </Card>
   );
