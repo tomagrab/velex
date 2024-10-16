@@ -12,7 +12,7 @@ export const GetTickets = async (): Promise<CommonResponse<
       include: {
         creator: true,
         owner: true,
-        assignedTo: true,
+        assigned: true,
         lastEditedBy: true,
         status: true,
         category: true,
