@@ -62,30 +62,34 @@ export default function TicketsAnalyticsTab() {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <div className="flex">
-          <GenericBarChart
-            data={barChartdata}
-            dataKey="key"
-            valueKey="value"
-            getData={() => barChartdata}
-            config={barChartconfig}
-          />
-
-          <GenericPieChartDonutWithText
-            data={pieChartDonutWithTextData}
-            dataKey="browser"
-            valueKey="visitors"
-            getData={data => data} // No transformation for now
-            config={pieChartDonutWithTextConfig}
-          />
-
-          <GenericAreaChartStacked
-            data={areaChartData}
-            xAxisKey="month"
-            yKeys={['desktop', 'mobile']}
-            getData={() => areaChartData}
-            config={areaChartConfig}
-          />
+        <div className="flex flex-col lg:flex-row">
+          <div className="flex-1">
+            <GenericBarChart
+              data={barChartdata}
+              dataKey="key"
+              valueKey="value"
+              getData={() => barChartdata}
+              config={barChartconfig}
+            />
+          </div>
+          <div className="flex-1">
+            <GenericPieChartDonutWithText
+              data={pieChartDonutWithTextData}
+              dataKey="browser"
+              valueKey="visitors"
+              getData={() => pieChartDonutWithTextData}
+              config={pieChartDonutWithTextConfig}
+            />
+          </div>
+          <div className="flex-1">
+            <GenericAreaChartStacked
+              data={areaChartData}
+              xAxisKey="month"
+              yKeys={['desktop', 'mobile']}
+              getData={() => areaChartData}
+              config={areaChartConfig}
+            />
+          </div>
         </div>
       </CardContent>
     </Card>
