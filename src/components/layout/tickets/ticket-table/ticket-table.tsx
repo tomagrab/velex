@@ -74,7 +74,7 @@ export const ticketsColumns: ColumnDef<Ticket>[] = [
     header: 'Actions',
     cell: ({ row }) => (
       <Button variant={`ghost`}>
-        <Link href={`/tickets/${row.original.id}`}>View</Link>
+        <Link href={`/tickets/${row.original.id}?isEditMode=false`}>View</Link>
       </Button>
     ),
   },
