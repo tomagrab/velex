@@ -44,8 +44,8 @@ export const ticketsColumns: ColumnDef<Ticket>[] = [
     header: 'Owner',
   },
   {
-    accessorKey: 'assignedTo.name', // Access specific field in assignedTo
-    header: 'Assigned To',
+    accessorKey: 'assigned.name', // Access specific field in assigned
+    header: 'Assigned',
   },
   {
     accessorKey: 'status.name', // Access specific field in status

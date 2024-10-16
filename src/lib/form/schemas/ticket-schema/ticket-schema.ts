@@ -5,7 +5,7 @@ export const ticketSchema = z.object({
   creatorId: z.string().min(1).max(255),
   ownerId: z.string().min(1).max(255),
   lastEditedById: z.string().min(1).max(255),
-  assignedToId: z.string().min(1).max(255),
+  assignedId: z.string().min(1).max(255),
   clientName: z.string().min(1).max(255),
   clientEmail: z.union([z.literal(''), z.string().email()]),
   clientPhone: z

@@ -15,7 +15,7 @@ export const PutTicket = async (
         creatorId: data.creatorId,
         ownerId: data.ownerId,
         lastEditedById: data.lastEditedById,
-        assignedToId: data.assignedToId,
+        assignedId: data.assignedId,
         clientName: data.clientName,
         statusId: data.statusId,
         categoryId: data.categoryId,

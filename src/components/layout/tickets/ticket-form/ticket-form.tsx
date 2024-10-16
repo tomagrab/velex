@@ -61,7 +61,7 @@ export default function TicketForm({
       creatorId: '',
       ownerId: '',
       lastEditedById: '',
-      assignedToId: '',
+      assignedId: '',
       clientName: '',
       clientEmail: '',
       clientPhone: '',
@@ -79,7 +79,7 @@ export default function TicketForm({
         creatorId: ticket.creatorId,
         ownerId: ticket.ownerId,
         lastEditedById: ticket.lastEditedById,
-        assignedToId: ticket.assignedToId,
+        assignedId: ticket.assignedId,
         clientName: ticket.clientName,
         clientEmail: ticket.clientEmail ?? '',
         clientPhone: ticket.clientPhone ?? '',
@@ -123,11 +123,11 @@ export default function TicketForm({
     }
   };
 
-  // Set creatorId, ownerId, lastEditedById, and assignedToId to the current user
+  // Set creatorId, ownerId, lastEditedById, and assignedId to the current user
   form.setValue('creatorId', dbUser.id);
   form.setValue('ownerId', dbUser.id);
   form.setValue('lastEditedById', dbUser.id);
-  form.setValue('assignedToId', dbUser.id);
+  form.setValue('assignedId', dbUser.id);
 
   return (
     <Form {...form}>
@@ -138,7 +138,7 @@ export default function TicketForm({
         <input type="hidden" {...form.register('creatorId')} />
         <input type="hidden" {...form.register('ownerId')} />
         <input type="hidden" {...form.register('lastEditedById')} />
-        <input type="hidden" {...form.register('assignedToId')} />
+        <input type="hidden" {...form.register('assignedId')} />
 
         {/* This section should take 1/2 width of the form container */}
         <section className="flex w-full flex-col gap-2 pr-2 md:w-1/2">

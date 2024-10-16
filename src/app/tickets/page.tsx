@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import PageHeading from '@/components/layout/page-heading/page-heading';
 import TicketTabs from '@/components/layout/tickets/ticket-tabs/ticket-tabs';
 import { GetTickets } from '@/app/server/tickets/get-tickets';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 export const metadata: Metadata = {
   title: 'Tickets | velex',

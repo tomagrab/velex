@@ -36,8 +36,8 @@ model Ticket {
   owner          User       @relation("Owner", fields: [ownerId], references: [id])
   lastEditedById String
   lastEditedBy   User       @relation("Editor", fields: [lastEditedById], references: [id])
-  assignedToId   String
-  assignedTo     User       @relation("Assignee", fields: [assignedToId], references: [id])
+  assignedId   String
+  assigned       User       @relation("Assignee", fields: [assignedId], references: [id])
   clientName     String
   clientEmail    String?
   clientPhone    String?

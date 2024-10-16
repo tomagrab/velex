@@ -11,7 +11,7 @@ export const CreateTicket = async (formData: FormData): Promise<string> => {
       creatorId: formData.get('creatorId') as string,
       ownerId: formData.get('ownerId') as string,
       lastEditedById: formData.get('lastEditedById') as string,
-      assignedToId: formData.get('assignedToId') as string,
+      assignedId: formData.get('assignedId') as string,
       clientName: formData.get('clientName') as string,
       clientEmail:
         formData.get('clientEmail') === '' ? null : formData.get('clientEmail'),
@@ -34,7 +34,7 @@ export const CreateTicket = async (formData: FormData): Promise<string> => {
         creator: { connect: { id: parsedTicket.creatorId } },
         owner: { connect: { id: parsedTicket.ownerId } },
         lastEditedBy: { connect: { id: parsedTicket.lastEditedById } },
-        assignedTo: { connect: { id: parsedTicket.assignedToId } },
+        assigned: { connect: { id: parsedTicket.assignedId } },
         clientName: parsedTicket.clientName,
         clientEmail: parsedTicket.clientEmail as string | null,
         clientPhone: (parsedTicket.clientPhone as string) || null,

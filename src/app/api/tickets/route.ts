@@ -58,7 +58,7 @@ export const POST = withApiAuthRequired(async (request: NextRequest) => {
         ...data,
         creatorId: data.creatorId,
         lastEditedBy: { connect: { id: data.lastEditedById } },
-        assignedTo: { connect: { id: data.assignedToId } },
+        assigned: { connect: { id: data.assignedId } },
         owner: { connect: { id: data.ownerId } },
         status: { connect: { id: data.statusId } },
         category: { connect: { id: data.categoryId } },
