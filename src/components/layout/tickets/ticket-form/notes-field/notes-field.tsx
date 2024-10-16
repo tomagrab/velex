@@ -1,3 +1,5 @@
+'use client';
+
 import {
   FormControl,
   FormField,
@@ -7,12 +9,14 @@ import {
 } from '@/components/ui/form';
 import { Textarea } from '@/components/ui/textarea';
 import { ticketSchema } from '@/lib/form/schemas/ticket-schema/ticket-schema';
-import { Prisma } from '@prisma/client';
+import { Prisma, User } from '@prisma/client';
 import { UseFormReturn } from 'react-hook-form';
 import { z } from 'zod';
 import NotesHistory from './notes-history/notes-history';
+import { useEffect } from 'react';
 
 type NotesFieldsProps = {
+  user: User;
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
   isEditMode?: boolean;
   ticket: Prisma.TicketGetPayload<{
@@ -28,13 +32,22 @@ type NotesFieldsProps = {
 };
 
 export default function NotesField({
+  user,
   form,
   isEditMode,
   ticket,
 }: NotesFieldsProps) {
+  useEffect(() => {
+    form.setValue('notes.0.creatorId', user.id);
+    form.setValue('notes.0.lastEditedById', user.id);
+  }, [user.id, form]);
+
   return (
     <>
       <div className="w-3/4">
+        <input type="hidden" {...form.register('notes.0.creatorId')} />
+        <input type="hidden" {...form.register('notes.0.lastEditedById')} />
+
         <FormLabel>New Note</FormLabel>
         <FormField
           disabled={!isEditMode}

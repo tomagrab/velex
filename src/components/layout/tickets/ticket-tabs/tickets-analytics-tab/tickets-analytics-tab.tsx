@@ -24,11 +24,22 @@ import { useTicketAnalytics } from '@/hooks/tickets/use-ticket-analytics/use-tic
 import TicketsPerMonthAreaChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-area-charts/tickets-per-month-area-chart/tickets-per-month-area-chart';
 import TicketsByStatusAreaChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-area-charts/tickets-by-status-area-chart/tickets-by-status-area-chart';
 import TicketsByCategoryAreaChart from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/ticket-area-charts/tickets-by-category-area-chart/tickets-by-category-area-chart';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
-export default function TicketsAnalyticsTab() {
+type TicketsAnalyticsTabProps = {
+  user: UserProfile;
+  isLoading: boolean;
+  error: Error | undefined;
+};
+
+export default function TicketsAnalyticsTab({
+  user,
+  isLoading,
+  error,
+}: TicketsAnalyticsTabProps) {
   const {
-    loading,
-    error,
+    ticketsAnalyticsLoading,
+    ticketsAnalyticsError,
     ticketsPerMonth,
     ticketsByCategory,
     ticketsByStatus,
@@ -48,18 +59,18 @@ export default function TicketsAnalyticsTab() {
             <AccordionTrigger>Bar Charts</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 lg:flex-row">
               <TicketsPerMonthBarChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsPerMonth={ticketsPerMonth}
               />
               <TicketsByCategoryBarChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsByCategory={ticketsByCategory}
               />
               <TicketsByStatusBarChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsByStatus={ticketsByStatus}
               />
             </AccordionContent>
@@ -68,18 +79,18 @@ export default function TicketsAnalyticsTab() {
             <AccordionTrigger>Pie Charts</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 lg:flex-row">
               <TicketsPerMonthPieChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsPerMonth={ticketsPerMonth}
               />
               <TicketsByCategoryPieChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsByCategory={ticketsByCategory}
               />
               <TicketsByStatusPieChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsByStatus={ticketsByStatus}
               />
             </AccordionContent>
@@ -88,18 +99,18 @@ export default function TicketsAnalyticsTab() {
             <AccordionTrigger>Stacked Area Charts</AccordionTrigger>
             <AccordionContent className="flex flex-col gap-4 lg:flex-row">
               <TicketsPerMonthAreaChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsPerMonth={ticketsPerMonth}
               />
               <TicketsByCategoryAreaChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsByCategory={ticketsByCategory}
               />
               <TicketsByStatusAreaChart
-                loading={loading}
-                error={error}
+                loading={ticketsAnalyticsLoading}
+                error={ticketsAnalyticsError}
                 ticketsByStatus={ticketsByStatus}
               />
             </AccordionContent>

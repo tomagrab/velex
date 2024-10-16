@@ -25,9 +25,9 @@ export default async function TicketsPage() {
   const ticketTabTickets = tickets.data;
 
   return (
-    <ScrollArea className="flex flex-1 flex-col gap-4">
+    <div className="flex flex-1 flex-col gap-4">
       <PageHeading title="Tickets" />
       <TicketTabs tickets={ticketTabTickets} />
-    </ScrollArea>
+    </div>
   );
 }

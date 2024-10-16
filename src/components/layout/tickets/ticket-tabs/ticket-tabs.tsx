@@ -7,12 +7,16 @@ import TicketsTableTab from '@/components/layout/tickets/ticket-tabs/tickets-tab
 import CreateTicketTab from '@/components/layout/tickets/ticket-tabs/create-ticket-tab/create-ticket-tab';
 import TicketsAnalyticsTab from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/tickets-analytics-tab';
 import { Ticket } from '@prisma/client';
+import { useUser } from '@auth0/nextjs-auth0/client';
+import { Loader } from 'lucide-react';
 
 type TicketTabsProps = {
   tickets: Ticket[];
 };
 
 export default function TicketTabs({ tickets }: TicketTabsProps) {
+  const { user, isLoading, error } = useUser();
+
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -40,6 +44,14 @@ export default function TicketTabs({ tickets }: TicketTabsProps) {
     setIsEditMode(true);
   };
 
+  if (!user || isLoading) {
+    return (
+      <div className="flex items-center justify-center">
+        <Loader className="h-8 w-8 animate-spin" />
+      </div>
+    );
+  }
+
   return (
     <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
       <TabsList className="mb-4 grid w-full grid-cols-3">
@@ -50,6 +62,9 @@ export default function TicketTabs({ tickets }: TicketTabsProps) {
 
       <TabsContent value="TicketsTableTab">
         <TicketsTableTab
+          user={user}
+          isLoading={isLoading}
+          error={error}
           tickets={tickets}
           handleCreateButtonClick={handleCreateButtonClick}
         />
@@ -57,13 +72,16 @@ export default function TicketTabs({ tickets }: TicketTabsProps) {
 
       <TabsContent value="CreateTicketTab">
         <CreateTicketTab
+          user={user}
+          isLoading={isLoading}
+          error={error}
           handleEditModeClick={handleEditModeClick}
           isEditMode={isEditMode}
         />
       </TabsContent>
 
       <TabsContent value="TicketsAnalyticsTab">
-        <TicketsAnalyticsTab />
+        <TicketsAnalyticsTab user={user} isLoading={isLoading} error={error} />
       </TabsContent>
     </Tabs>
   );

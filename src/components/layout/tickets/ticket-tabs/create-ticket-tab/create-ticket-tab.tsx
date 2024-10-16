@@ -8,13 +8,20 @@ import {
 import { Badge } from '@/components/ui/badge';
 import TicketForm from '@/components/layout/tickets/ticket-form/ticket-form';
 import { cn } from '@/lib/utils';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
 type CreateTicketTabProps = {
+  user: UserProfile;
+  isLoading: boolean;
+  error: Error | undefined;
   handleEditModeClick: () => void;
   isEditMode: boolean;
 };
 
 export default function CreateTicketTab({
+  user,
+  isLoading,
+  error,
   handleEditModeClick,
   isEditMode,
 }: CreateTicketTabProps) {
@@ -42,7 +49,12 @@ export default function CreateTicketTab({
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-2">
-        <TicketForm isEditMode={isEditMode} />
+        <TicketForm
+          user={user}
+          userLoading={isLoading}
+          userError={error}
+          isEditMode={isEditMode}
+        />
       </CardContent>
     </Card>
   );

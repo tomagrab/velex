@@ -8,7 +8,7 @@ import {
   DialogDescription,
   DialogFooter,
 } from '@/components/ui/dialog';
-import { useDbUser } from '@/hooks/use-db-user/use-db-user';
+import { useDbUserWithDbId } from '@/hooks/use-db-user-with-db-id/use-db-user-with-db-id';
 import { mmDdYy } from '@/lib/utilities/format/datetime/mm-dd-yy/mm-dd-yy';
 import { Prisma } from '@prisma/client';
 import { Loader } from 'lucide-react';
@@ -43,12 +43,12 @@ export default function NotesHistoryItem({
     dbUser: noteAuthor,
     loading: noteAuthorLoading,
     error: noteAuthorError,
-  } = useDbUser(note.creatorId);
+  } = useDbUserWithDbId(note.creatorId);
   const {
     dbUser: noteEditor,
     loading: noteEditorLoading,
     error: noteEditorError,
-  } = useDbUser(note.lastEditedById);
+  } = useDbUserWithDbId(note.lastEditedById);
 
   if (!ticket || !ticket?.notes || ticket.notes.length === 0) {
     return null;

@@ -8,16 +8,23 @@ import {
 import { Ticket } from '@prisma/client';
 import TicketsTable from '@/components/layout/tickets/ticket-table/ticket-table';
 import { Button } from '@/components/ui/button';
+import { UserProfile } from '@auth0/nextjs-auth0/client';
 
-type TicketsTabProps = {
+type TicketTableProps = {
+  user: UserProfile;
+  isLoading: boolean;
+  error: Error | undefined;
   tickets: Ticket[];
   handleCreateButtonClick: () => void;
 };
 
 export default function TicketsTableTab({
+  user,
+  isLoading,
+  error,
   tickets,
   handleCreateButtonClick,
-}: TicketsTabProps) {
+}: TicketTableProps) {
   return (
     <Card>
       <CardHeader className="flex flex-row justify-between">

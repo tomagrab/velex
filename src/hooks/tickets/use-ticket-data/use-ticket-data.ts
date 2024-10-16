@@ -1,8 +1,23 @@
 import { CustomError } from '@/lib/interfaces/utilities/custom-error/custom-error';
-import { Category, Prisma, Status, SubCategory, Ticket } from '@prisma/client';
+import {
+  Category,
+  Prisma,
+  Status,
+  SubCategory,
+  Ticket,
+  User,
+} from '@prisma/client';
 import { useEffect, useState } from 'react';
 
-export const useTicketData = (ticketId?: Ticket['id']) => {
+type useTicketDataProps = {
+  ticketId?: Ticket['id'];
+  userAuth0Id?: string | null | undefined;
+};
+
+export const useTicketData = ({
+  ticketId,
+  userAuth0Id,
+}: useTicketDataProps) => {
   const [ticket, setTicket] = useState<Prisma.TicketGetPayload<{
     include: {
       creator: true;
@@ -23,10 +38,24 @@ export const useTicketData = (ticketId?: Ticket['id']) => {
   >(null);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<CustomError | null>(null);
+  const [dbUser, setDbUser] = useState<User | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Fetch user data
+        if (userAuth0Id) {
+          const userData = await fetch(
+            `/api/users/${userAuth0Id}/db-user-with-auth0-id`,
+          )
+            .then(res => res.json())
+            .catch(error => {
+              const customError = error as CustomError;
+              setError(customError);
+            });
+          setDbUser(userData);
+        }
+
         // Fetch ticket if editing
         if (ticketId) {
           const ticketData = await fetch(`/api/tickets/${ticketId}`)
@@ -58,9 +87,10 @@ export const useTicketData = (ticketId?: Ticket['id']) => {
     };
 
     fetchData();
-  }, [ticketId]);
+  }, [ticketId, userAuth0Id]);
 
   return {
+    dbUser,
     ticket,
     isUpdating,
     availableStatus,

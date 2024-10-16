@@ -3,8 +3,10 @@ import { TicketAnalyticsType } from '@/lib/types/layout/tickets/ticket-analytics
 import { useEffect, useState } from 'react';
 
 export const useTicketAnalytics = () => {
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<CustomError | null>(null);
+  const [ticketsAnalyticsLoading, setTicketsAnalyticsLoading] =
+    useState<boolean>(true);
+  const [ticketsAnalyticsError, setTicketsAnalyticsError] =
+    useState<CustomError | null>(null);
 
   const [ticketsPerMonth, setTicketsPerMonth] = useState<TicketAnalyticsType>(
     [],
@@ -39,9 +41,9 @@ export const useTicketAnalytics = () => {
         setTicketsByStatus(totalTicketsByStatus);
       } catch (error) {
         const customError = error as CustomError;
-        setError(customError);
+        setTicketsAnalyticsError(customError);
       } finally {
-        setLoading(false);
+        setTicketsAnalyticsLoading(false);
       }
     };
 
@@ -49,8 +51,8 @@ export const useTicketAnalytics = () => {
   }, []);
 
   return {
-    loading,
-    error,
+    ticketsAnalyticsLoading,
+    ticketsAnalyticsError,
     ticketsPerMonth,
     ticketsByCategory,
     ticketsByStatus,
