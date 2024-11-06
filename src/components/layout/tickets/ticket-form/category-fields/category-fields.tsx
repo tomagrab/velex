@@ -31,15 +31,15 @@ import { useEffect } from 'react';
 type CategoryFieldsProps = {
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
   isEditMode?: boolean;
-  availableCategory: Category[] | null;
-  availableSubCategory: SubCategory[] | null;
+  categories: Category[] | null;
+  subCategories: SubCategory[] | null;
 };
 
 export default function CategoryFields({
   form,
   isEditMode,
-  availableCategory,
-  availableSubCategory,
+  categories,
+  subCategories,
 }: CategoryFieldsProps) {
   // Effect to set the initial category and subcategory values
   useEffect(() => {
@@ -48,16 +48,16 @@ export default function CategoryFields({
     const currentSubCategoryId = form.getValues('subCategoryId');
 
     if (
-      availableCategory?.length &&
-      availableSubCategory?.length &&
+      categories?.length &&
+      subCategories?.length &&
       (!currentCategoryId || !currentSubCategoryId)
     ) {
       // Check if the form has ticket data with pre-existing category or subcategory
       if (!currentCategoryId) {
-        const initialCategory = availableCategory[0];
+        const initialCategory = categories[0];
         form.setValue('categoryId', initialCategory.id);
 
-        const initialSubCategory = availableSubCategory.find(
+        const initialSubCategory = subCategories.find(
           sub => sub.categoryId === initialCategory.id,
         );
         form.setValue('subCategoryId', initialSubCategory?.id || '');
@@ -65,19 +65,19 @@ export default function CategoryFields({
 
       // Check if the form has pre-existing subcategory and it's valid
       if (!currentSubCategoryId && currentCategoryId) {
-        const validSubCategory = availableSubCategory.find(
+        const validSubCategory = subCategories.find(
           sub => sub.categoryId === currentCategoryId,
         );
         form.setValue('subCategoryId', validSubCategory?.id || '');
       }
     }
-  }, [availableCategory, availableSubCategory, form]);
+  }, [categories, subCategories, form]);
 
   if (
-    !availableCategory ||
-    availableCategory === undefined ||
-    !availableSubCategory ||
-    availableSubCategory === undefined
+    !categories ||
+    categories === undefined ||
+    !subCategories ||
+    subCategories === undefined
   ) {
     return null;
   }
@@ -98,7 +98,7 @@ export default function CategoryFields({
                   <PopoverTrigger asChild>
                     <Button
                       disabled={!isEditMode}
-                      defaultValue={availableCategory[0].id}
+                      defaultValue={categories[0].id}
                       variant="outline"
                       role="combobox"
                       className={cn(
@@ -107,7 +107,7 @@ export default function CategoryFields({
                       )}
                     >
                       {field.value
-                        ? availableCategory.find(
+                        ? categories.find(
                             category => category.id === field.value,
                           )?.name
                         : 'Select category'}
@@ -120,7 +120,7 @@ export default function CategoryFields({
                       <CommandList>
                         <CommandEmpty>No category found.</CommandEmpty>
                         <CommandGroup>
-                          {availableCategory.map(category => (
+                          {categories.map(category => (
                             <CommandItem
                               value={category.id}
                               key={category.id}
@@ -128,7 +128,7 @@ export default function CategoryFields({
                                 field.onChange(category.id);
                                 form.setValue(
                                   'subCategoryId',
-                                  availableSubCategory.find(
+                                  subCategories.find(
                                     sub => sub.categoryId === category.id,
                                   )?.id || '',
                                 );
@@ -179,7 +179,7 @@ export default function CategoryFields({
                       )}
                     >
                       {field.value
-                        ? availableSubCategory.find(
+                        ? subCategories.find(
                             subCategory => subCategory.id === field.value,
                           )?.name
                         : 'Select subcategory'}
@@ -192,7 +192,7 @@ export default function CategoryFields({
                       <CommandList>
                         <CommandEmpty>No subcategory found.</CommandEmpty>
                         <CommandGroup>
-                          {availableSubCategory
+                          {subCategories
                             .filter(
                               sub =>
                                 sub.categoryId === form.getValues('categoryId'),

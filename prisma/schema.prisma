@@ -8,79 +8,96 @@ generator client {
 }
 
 model User {
-  id             String   @id @default(cuid())
-  auth0Id        String   @unique
-  email          String   @unique
-  givenName      String
-  familyName     String
-  nickname       String
-  name           String
-  picture        String
-  emailVerified  Boolean
-  role           String   @default("User")
-  createdAt      DateTime @default(now())
-  updatedAt      DateTime @updatedAt
-  ticketsCreated Ticket[] @relation("Creator")
-  ticketsOwned   Ticket[] @relation("Owner")
-  ticketsEdited  Ticket[] @relation("Editor")
-  ticketsAssigned Ticket[] @relation("Assignee")
-  notesCreated   Note[]   @relation("NoteCreator")
-  notesEdited    Note[]   @relation("NoteEditor")
+  id                 String        @id @default(cuid())
+  auth0Id            String        @unique
+  email              String        @unique
+  givenName          String
+  familyName         String
+  nickname           String
+  name               String
+  picture            String
+  emailVerified      Boolean
+  role               String        @default("User")
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  ticketsCreated     Ticket[]      @relation("Creator")
+  ticketsOwned       Ticket[]      @relation("Owner")
+  ticketsEdited      Ticket[]      @relation("Editor")
+  ticketsAssigned    Ticket[]      @relation("Assignee")
+  notesCreated       Note[]        @relation("NoteCreator")
+  notesEdited        Note[]        @relation("NoteEditor")
+  notesHistory       NoteHistory[] @relation("NoteHistoryCreator")
+  notesHistoryEdited NoteHistory[] @relation("NoteHistoryEditor")
 }
 
 model Ticket {
-  id             String     @id @default(cuid())
+  id             String      @id @default(cuid())
+  number         Int         @unique @default(autoincrement())
   creatorId      String
-  creator        User       @relation("Creator", fields: [creatorId], references: [id])
+  creator        User        @relation("Creator", fields: [creatorId], references: [id])
   ownerId        String
-  owner          User       @relation("Owner", fields: [ownerId], references: [id])
+  owner          User        @relation("Owner", fields: [ownerId], references: [id])
   lastEditedById String
-  lastEditedBy   User       @relation("Editor", fields: [lastEditedById], references: [id])
-  assignedId   String
-  assigned       User       @relation("Assignee", fields: [assignedId], references: [id])
+  lastEditedBy   User        @relation("Editor", fields: [lastEditedById], references: [id])
+  assignedId     String
+  assigned       User        @relation("Assignee", fields: [assignedId], references: [id])
   clientName     String
   clientEmail    String?
   clientPhone    String?
   statusId       String
-  status         Status     @relation(fields: [statusId], references: [id])
+  status         Status      @relation(fields: [statusId], references: [id])
   categoryId     String
-  category       Category   @relation(fields: [categoryId], references: [id])
+  category       Category    @relation(fields: [categoryId], references: [id])
   subCategoryId  String
   subCategory    SubCategory @relation(fields: [subCategoryId], references: [id])
-  notes          Note[]     @relation("TicketNotes")
-  createdAt      DateTime   @default(now())
-  updatedAt      DateTime   @updatedAt
+  notes          Note[]      @relation("TicketNotes")
+  createdAt      DateTime    @default(now())
+  updatedAt      DateTime    @updatedAt
 }
 
 model Status {
-  id    String      @id @default(cuid())
-  name  String   @unique
+  id      String   @id @default(cuid())
+  name    String   @unique
   tickets Ticket[]
 }
 
 model Category {
-  id          String          @id @default(cuid())
-  name        String       @unique
+  id            String        @id @default(cuid())
+  name          String        @unique
   subCategories SubCategory[]
-  tickets     Ticket[]
+  tickets       Ticket[]
 }
 
 model SubCategory {
-  id         String       @id @default(cuid())
-  name       String    @unique
+  id         String   @id @default(cuid())
+  name       String   @unique
   categoryId String
-  category   Category  @relation(fields: [categoryId], references: [id])
+  category   Category @relation(fields: [categoryId], references: [id])
   tickets    Ticket[]
 }
 
 model Note {
-  id             String   @id @default(cuid())
+  id             String        @id @default(cuid())
   ticketId       String
-  ticket         Ticket   @relation("TicketNotes", fields: [ticketId], references: [id])
+  ticket         Ticket        @relation("TicketNotes", fields: [ticketId], references: [id], onDelete: Cascade)
   creatorId      String
-  creator        User     @relation("NoteCreator", fields: [creatorId], references: [id])
+  creator        User          @relation("NoteCreator", fields: [creatorId], references: [id])
   lastEditedById String
-  lastEditedBy   User     @relation("NoteEditor", fields: [lastEditedById], references: [id])
+  lastEditedBy   User          @relation("NoteEditor", fields: [lastEditedById], references: [id])
+  content        String
+  createdAt      DateTime      @default(now())
+  updatedAt      DateTime      @updatedAt
+  histories      NoteHistory[] @relation("NoteHistoryRelation")
+}
+
+model NoteHistory {
+  id             String   @id @default(cuid())
+  noteId         String
+  note           Note     @relation("NoteHistoryRelation", fields: [noteId], references: [id], onDelete: Cascade)
+  creatorId      String
+  creator        User     @relation("NoteHistoryCreator", fields: [creatorId], references: [id])
+  lastEditedById String
+  lastEditedBy   User     @relation("NoteHistoryEditor", fields: [lastEditedById], references: [id])
   content        String
   createdAt      DateTime @default(now())
   updatedAt      DateTime @updatedAt

@@ -6,15 +6,26 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import TicketsTableTab from '@/components/layout/tickets/ticket-tabs/tickets-table-tab/tickets-table-tab';
 import CreateTicketTab from '@/components/layout/tickets/ticket-tabs/create-ticket-tab/create-ticket-tab';
 import TicketsAnalyticsTab from '@/components/layout/tickets/ticket-tabs/tickets-analytics-tab/tickets-analytics-tab';
-import { Ticket } from '@prisma/client';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Loader } from 'lucide-react';
+import { CommonTicketType } from '@/lib/types/layout/tickets/common-ticket-type/common-ticket-type';
+import { Category, Status, SubCategory, User } from '@prisma/client';
 
 type TicketTabsProps = {
-  tickets: Ticket[];
+  dbUser: User | null;
+  tickets: CommonTicketType[] | null;
+  statuses: Status[] | null;
+  categories: Category[] | null;
+  subCategories: SubCategory[] | null;
 };
 
-export default function TicketTabs({ tickets }: TicketTabsProps) {
+export default function TicketTabs({
+  dbUser,
+  tickets,
+  statuses,
+  categories,
+  subCategories,
+}: TicketTabsProps) {
   const { user, isLoading, error } = useUser();
 
   const router = useRouter();
@@ -34,10 +45,6 @@ export default function TicketTabs({ tickets }: TicketTabsProps) {
       router.replace(newParams);
     }
   }, [activeTab, isEditMode, router, searchParams]);
-
-  const handleEditModeClick = () => {
-    setIsEditMode(prev => !prev);
-  };
 
   const handleCreateButtonClick = () => {
     setActiveTab('CreateTicketTab');
@@ -72,11 +79,10 @@ export default function TicketTabs({ tickets }: TicketTabsProps) {
 
       <TabsContent value="CreateTicketTab">
         <CreateTicketTab
-          user={user}
-          isLoading={isLoading}
-          error={error}
-          handleEditModeClick={handleEditModeClick}
-          isEditMode={isEditMode}
+          dbUser={dbUser}
+          statuses={statuses}
+          categories={categories}
+          subCategories={subCategories}
         />
       </TabsContent>
 

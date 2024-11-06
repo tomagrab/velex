@@ -2,7 +2,7 @@ import { Metadata } from 'next';
 import { getSession, withPageAuthRequired } from '@auth0/nextjs-auth0';
 import PageHeading from '@/components/layout/page-heading/page-heading';
 import UserTable from '@/components/layout/users/user-table/user-table';
-import { GetUsers } from '@/app/server/users/users';
+import { GetDBUsers } from '@/app/server/users/db-users/get-db-users';
 
 export const metadata: Metadata = {
   title: 'Users | velex',
@@ -19,7 +19,7 @@ export default withPageAuthRequired(
       return <div>Unauthorized</div>;
     }
 
-    const users = await GetUsers();
+    const users = await GetDBUsers();
 
     if (!users || users.data === undefined) {
       return <div>Unauthorized or error fetching users.</div>;

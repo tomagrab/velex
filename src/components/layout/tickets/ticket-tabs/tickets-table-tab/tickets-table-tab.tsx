@@ -5,17 +5,17 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import { Ticket } from '@prisma/client';
 import TicketsTable from '@/components/layout/tickets/ticket-table/ticket-table';
 import { Button } from '@/components/ui/button';
 import { UserProfile } from '@auth0/nextjs-auth0/client';
 import { Loader } from 'lucide-react';
+import { CommonTicketType } from '@/lib/types/layout/tickets/common-ticket-type/common-ticket-type';
 
 type TicketTableProps = {
   user: UserProfile;
   isLoading: boolean;
   error: Error | undefined;
-  tickets: Ticket[];
+  tickets: CommonTicketType[] | null;
   handleCreateButtonClick: () => void;
 };
 
@@ -67,6 +67,29 @@ export default function TicketsTableTab({
         </CardHeader>
         <CardContent className="space-y-2">
           <Loader className="h-8 w-8 animate-spin" />
+        </CardContent>
+      </Card>
+    );
+  }
+
+  if (!tickets || tickets === undefined) {
+    return (
+      <Card>
+        <CardHeader className="flex flex-row justify-between">
+          <div>
+            <CardTitle>Tickets</CardTitle>
+            <CardDescription>
+              View and manage your tickets here.
+            </CardDescription>
+          </div>
+          <div>
+            <Button onClick={() => handleCreateButtonClick()}>
+              Create Ticket
+            </Button>
+          </div>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <p>No tickets!</p>
         </CardContent>
       </Card>
     );

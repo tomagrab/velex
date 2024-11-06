@@ -1,11 +1,8 @@
 import prisma from '@/lib/db/prisma/prisma';
-import { Ticket } from '@prisma/client';
-import { CommonResponse } from '@/lib/types/api/common-response/common-response';
+import { CommonTicketType } from '@/lib/types/layout/tickets/common-ticket-type/common-ticket-type';
 
 // Utility function to fetch all tickets for SSR pages
-export const GetTickets = async (): Promise<CommonResponse<
-  Ticket[]
-> | null> => {
+export const GetTickets = async (): Promise<CommonTicketType[] | null> => {
   try {
     // Fetch tickets from the database
     const tickets = await prisma.ticket.findMany({
@@ -22,22 +19,12 @@ export const GetTickets = async (): Promise<CommonResponse<
     });
 
     if (!tickets || tickets.length === 0) {
-      return {
-        success: false,
-        data: [],
-        error: 'No tickets found',
-        status: 404,
-      };
+      return null;
     }
 
-    return { success: true, data: tickets, error: 'No errors!', status: 200 };
+    return tickets;
   } catch (error) {
     console.error('Error fetching tickets:', error);
-    return {
-      success: false,
-      data: [],
-      error: 'Error fetching tickets',
-      status: 500,
-    };
+    return null;
   }
 };

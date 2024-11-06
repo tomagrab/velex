@@ -1,11 +1,10 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { z } from 'zod';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Form } from '@/components/ui/form';
-import { Ticket } from '@prisma/client';
 import { UserProfile } from '@auth0/nextjs-auth0/client';
 import { Loader } from 'lucide-react';
 import { ticketSchema } from '@/lib/form/schemas/ticket-schema/ticket-schema';
@@ -21,37 +20,38 @@ import NotesField from '@/components/layout/tickets/ticket-form/notes-field/note
 import ButtonField from '@/components/layout/tickets/ticket-form/button-field/button-field';
 import { useRouter } from 'next/navigation';
 import { formatTicketFormData } from '@/lib/utilities/format/tickets/format-ticket-form-data/format-ticket-form-data';
+import { CommonTicketType } from '@/lib/types/layout/tickets/common-ticket-type/common-ticket-type';
+import { Category, Status, SubCategory, User } from '@prisma/client';
 
 type TicketFormProps = {
   user: UserProfile;
   userLoading: boolean;
   userError: Error | undefined;
-  ticketId?: Ticket['id'];
+  dbUser: User | null;
   isEditMode?: boolean;
+  ticket?: CommonTicketType | null;
+  statuses: Status[] | null;
+  categories: Category[] | null;
+  subCategories: SubCategory[] | null;
 };
 
 export default function TicketForm({
   user,
   userLoading,
   userError,
-  ticketId,
+  dbUser,
   isEditMode = false,
+  ticket,
+  statuses,
+  categories,
+  subCategories,
 }: TicketFormProps) {
+  const [isUpdating, setIsUpdating] = useState(false);
   const router = useRouter();
 
   const userAuth0Id = user.sub;
 
-  const {
-    dbUser,
-    ticket,
-    isUpdating,
-    availableStatus,
-    availableCategory,
-    availableSubCategory,
-    loading: dataLoading,
-    error: dataError,
-  } = useTicketData({
-    ticketId,
+  const { loading: dataLoading, error: dataError } = useTicketData({
     userAuth0Id,
   });
 
@@ -122,6 +122,18 @@ export default function TicketForm({
         // Create the ticket
         const newTicketId = await CreateTicket(formattedTicketFormData);
         router.push(`/tickets/${newTicketId}?isEditMode=true`);
+      } else {
+        setIsUpdating(true);
+        // Validate the data with Zod
+        const ticketParsed = ticketSchema.parse(formData);
+
+        // Convert the data to FormData
+        const formattedTicketFormData = formatTicketFormData(ticketParsed);
+
+        // Update the ticket
+        await UpdateTicket(ticket.id, formattedTicketFormData);
+        router.push(`/tickets/${ticket.id}?isEditMode=true`);
+        setIsUpdating(false);
       }
     } catch (error) {
       console.error('Error creating ticket:', error);
@@ -156,13 +168,13 @@ export default function TicketForm({
           <CategoryFields
             form={form}
             isEditMode={isEditMode}
-            availableCategory={availableCategory}
-            availableSubCategory={availableSubCategory}
+            categories={categories}
+            subCategories={subCategories}
           />
           <StatusFields
             form={form}
             isEditMode={isEditMode}
-            availableStatus={availableStatus}
+            statuses={statuses}
           />
         </section>
 

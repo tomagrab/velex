@@ -3,15 +3,15 @@
 import DataTable from '@/components/layout/data-table/data-table';
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
-import { Ticket } from '@prisma/client';
+import { CommonTicketType } from '@/lib/types/layout/tickets/common-ticket-type/common-ticket-type';
 import { ColumnDef } from '@tanstack/react-table';
 import Link from 'next/link';
 
 type TicketsTableProps = {
-  tickets: Ticket[];
+  tickets: CommonTicketType[];
 };
 
-export const ticketsColumns: ColumnDef<Ticket>[] = [
+export const ticketsColumns: ColumnDef<CommonTicketType>[] = [
   {
     id: 'select',
     header: ({ table }) => (

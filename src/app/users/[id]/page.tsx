@@ -1,4 +1,4 @@
-import { GetUser } from '@/app/server/users/[id]/get-user';
+import { GetUser } from '@/app/server/users/db-users/[id]/get-user';
 import PageHeading from '@/components/layout/page-heading/page-heading';
 import { withPageAuthRequired } from '@auth0/nextjs-auth0';
 import Image from 'next/image';

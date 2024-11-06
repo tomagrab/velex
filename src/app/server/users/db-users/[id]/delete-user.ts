@@ -6,7 +6,7 @@ export const DeleteUser = async (id: string): Promise<CommonResponse<null>> => {
   try {
     // Delete the user from the database
     await prisma.user.delete({
-      where: { id },
+      where: { auth0Id: id },
     });
 
     return { success: true, status: 200, data: null };

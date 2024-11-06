@@ -14,13 +14,23 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { useUser } from '@auth0/nextjs-auth0/client';
 import { Loader } from 'lucide-react';
+import { CommonTicketType } from '@/lib/types/layout/tickets/common-ticket-type/common-ticket-type';
+import { Category, Status, SubCategory, User } from '@prisma/client';
 
 type TicketFormWrapperProps = {
-  ticketId: string;
+  dbUser: User | null;
+  ticket?: CommonTicketType | null;
+  statuses: Status[] | null;
+  categories: Category[] | null;
+  subCategories: SubCategory[] | null;
 };
 
 export default function TicketFormWrapper({
-  ticketId,
+  dbUser,
+  ticket,
+  statuses,
+  categories,
+  subCategories,
 }: TicketFormWrapperProps) {
   const { user, isLoading, error } = useUser();
 
@@ -131,8 +141,12 @@ export default function TicketFormWrapper({
           user={user}
           userLoading={isLoading}
           userError={error}
+          dbUser={dbUser}
           isEditMode={isEditMode}
-          ticketId={ticketId}
+          ticket={ticket}
+          statuses={statuses}
+          categories={categories}
+          subCategories={subCategories}
         />
       </CardContent>
     </Card>

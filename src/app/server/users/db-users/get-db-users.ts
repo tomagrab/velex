@@ -3,7 +3,7 @@ import { User } from '@prisma/client';
 import { CommonResponse } from '@/lib/types/api/common-response/common-response';
 
 // Utility function to fetch users for SSR pages
-export const GetUsers = async (): Promise<CommonResponse<User[]> | null> => {
+export const GetDBUsers = async (): Promise<CommonResponse<User[]> | null> => {
   try {
     // Fetch users from the database
     const users = await prisma.user.findMany();

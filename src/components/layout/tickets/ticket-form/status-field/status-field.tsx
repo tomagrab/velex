@@ -22,24 +22,24 @@ import { z } from 'zod';
 type StatusFieldsProps = {
   form: UseFormReturn<z.infer<typeof ticketSchema>>;
   isEditMode?: boolean;
-  availableStatus: Status[] | null;
+  statuses: Status[] | null;
 };
 
 export default function StatusFields({
   form,
   isEditMode,
-  availableStatus,
+  statuses,
 }: StatusFieldsProps) {
   // Effect to default to first available status if not already set
   useEffect(() => {
     const currentStatusId = form.getValues('statusId');
 
-    if (availableStatus && !currentStatusId) {
-      form.setValue('statusId', availableStatus[0].id);
+    if (statuses && !currentStatusId) {
+      form.setValue('statusId', statuses[0].id);
     }
-  }, [availableStatus, form]);
+  }, [statuses, form]);
 
-  if (!availableStatus || availableStatus === undefined) {
+  if (!statuses || statuses === undefined) {
     return null;
   }
 
@@ -59,15 +59,15 @@ export default function StatusFields({
                   <SelectTrigger disabled={!isEditMode}>
                     <SelectValue
                       placeholder={
-                        availableStatus.find(status => status.name === 'Open')
-                          ?.name || availableStatus[0].name
+                        statuses.find(status => status.name === 'Open')?.name ||
+                        statuses[0].name
                       }
                     />
                   </SelectTrigger>
                 </div>
               </FormControl>
               <SelectContent>
-                {availableStatus.map(status => (
+                {statuses.map(status => (
                   <SelectItem key={status.id} value={status.id}>
                     {status.name}
                   </SelectItem>
